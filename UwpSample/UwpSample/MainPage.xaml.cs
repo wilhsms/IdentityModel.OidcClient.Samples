@@ -1,10 +1,14 @@
-﻿using System;
+﻿using IdentityModel.OidcClient;
+using IdentityModel.OidcClient.WebView.Uwp;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
+using System.Text;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
+using Windows.Security.Authentication.Web;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
@@ -25,6 +29,44 @@ namespace UwpSample
         public MainPage()
         {
             this.InitializeComponent();
+        }
+
+        private async void LoginButton_Click(object sender, RoutedEventArgs e)
+        {
+            var authority = "https://demo.identityserver.io";
+
+            var validator = new EndpointIdentityTokenValidator(authority, "native");
+            var webView = new UwpWebView(false);
+
+            var options = new OidcClientOptions(
+                authority,
+                "native",
+                "secret",
+                "openid profile api",
+                WebAuthenticationBroker.GetCurrentApplicationCallbackUri().AbsoluteUri,
+                validator,
+                webView);
+
+            var client = new OidcClient(options);
+            var result = await client.LoginAsync();
+
+            if (!string.IsNullOrEmpty(result.Error))
+            {
+                ResultTextBox.Text = result.Error;
+                return;
+            }
+
+            var sb = new StringBuilder(128);
+
+            foreach (var claim in result.Claims)
+            {
+                sb.AppendLine($"{claim.Type}: {claim.Value}");
+            }
+
+            sb.AppendLine($"access token: {result.AccessToken}");
+
+            ResultTextBox.Text = sb.ToString();
+
         }
     }
 }
