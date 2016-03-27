@@ -16,7 +16,7 @@ namespace WinForms
 
             var authority = "https://demo.identityserver.io";
 
-            var validator = new EndpointIdentityTokenValidator(authority, "native");
+            var validator = new EndpointIdentityTokenValidator(authority);
             var options = new OidcClientOptions(
                 authority, 
                 "native", 
@@ -34,7 +34,7 @@ namespace WinForms
         {
             AccessTokenDisplay.Clear();
             IdentityTokenDisplay.Clear();
-
+            
             var result = await _client.LoginAsync(Silent.Checked);
 
             if (result.Success)
