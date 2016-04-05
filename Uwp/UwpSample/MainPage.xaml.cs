@@ -35,7 +35,7 @@ namespace UwpSample
         {
             var authority = "https://demo.identityserver.io";
 
-            var validator = new EndpointIdentityTokenValidator(authority, "native");
+            var validator = new EndpointIdentityTokenValidator(authority);
             var webView = new UwpWebView(false);
 
             var options = new OidcClientOptions(
