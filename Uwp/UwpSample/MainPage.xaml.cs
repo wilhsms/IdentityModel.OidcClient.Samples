@@ -1,4 +1,5 @@
 ﻿using IdentityModel.OidcClient;
+using IdentityModel.OidcClient.IdentityTokenValidation;
 using IdentityModel.OidcClient.WebView.Uwp;
 using System;
 using System.Collections.Generic;
@@ -34,9 +35,7 @@ namespace UwpSample
         private async void LoginButton_Click(object sender, RoutedEventArgs e)
         {
             var authority = "https://demo.identityserver.io";
-
-            var validator = new EndpointIdentityTokenValidator(authority);
-            var webView = new UwpWebView(false);
+            var webView = new UwpWebView(enableWindowsAuthentication: false);
 
             var options = new OidcClientOptions(
                 authority,
@@ -44,8 +43,7 @@ namespace UwpSample
                 "secret",
                 "openid profile api",
                 WebAuthenticationBroker.GetCurrentApplicationCallbackUri().AbsoluteUri,
-                validator,
-                webView);
+                webView: webView);
 
             var client = new OidcClient(options);
             var result = await client.LoginAsync();

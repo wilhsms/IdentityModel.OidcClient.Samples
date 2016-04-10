@@ -16,15 +16,13 @@ namespace WinForms
 
             var authority = "https://demo.identityserver.io";
 
-            var validator = new EndpointIdentityTokenValidator(authority);
             var options = new OidcClientOptions(
                 authority, 
                 "native", 
                 "secret", 
                 "openid email api",
                 "http://localhost/winforms.client", 
-                validator,
-                new WinFormsWebView());
+                webView: new WinFormsWebView());
             options.UseFormPost = true;
 
             _client = new OidcClient(options);
