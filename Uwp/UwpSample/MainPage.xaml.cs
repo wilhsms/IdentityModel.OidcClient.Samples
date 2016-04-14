@@ -43,7 +43,7 @@ namespace UwpSample
                 "secret",
                 "openid profile api",
                 WebAuthenticationBroker.GetCurrentApplicationCallbackUri().AbsoluteUri,
-                webView: webView);
+                webView);
 
             var client = new OidcClient(options);
             var result = await client.LoginAsync();

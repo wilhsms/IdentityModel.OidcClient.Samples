@@ -22,7 +22,7 @@ namespace WinForms
                 "secret", 
                 "openid email api",
                 "http://localhost/winforms.client", 
-                webView: new WinFormsWebView());
+                new WinFormsWebView());
             options.UseFormPost = true;
 
             _client = new OidcClient(options);
