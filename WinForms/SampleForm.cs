@@ -2,6 +2,7 @@
 using IdentityModel.OidcClient.WebView.WinForms;
 using System;
 using System.Linq;
+using System.Text;
 using System.Windows.Forms;
 
 namespace WinForms
@@ -20,7 +21,7 @@ namespace WinForms
                 authority, 
                 "native", 
                 "secret", 
-                "openid email api",
+                "openid email api offline_access",
                 "http://localhost/winforms.client", 
                 new WinFormsWebView());
             options.UseFormPost = true;
@@ -31,15 +32,26 @@ namespace WinForms
         private async void LoginButton_Click(object sender, EventArgs e)
         {
             AccessTokenDisplay.Clear();
-            IdentityTokenDisplay.Clear();
+            OtherDataDisplay.Clear();
             
             var result = await _client.LoginAsync(Silent.Checked);
 
             if (result.Success)
             {
                 AccessTokenDisplay.Text = result.AccessToken;
-                IdentityTokenDisplay.Text = string.Join(Environment.NewLine,
-                    result.Claims.Select(c => string.Format("{0}: {1}", c.Type, c.Value)));
+
+                var sb = new StringBuilder(128);
+                foreach (var claim in result.Claims)
+                {
+                    sb.AppendLine($"{claim.Type}: {claim.Value}");
+                }
+
+                if (!string.IsNullOrWhiteSpace(result.RefreshToken))
+                {
+                    sb.AppendLine($"refresh token: {result.RefreshToken}");
+                }
+
+                OtherDataDisplay.Text = sb.ToString();
             }
             else
             {
@@ -51,7 +63,7 @@ namespace WinForms
         {
             await _client.LogoutAsync(trySilent: Silent.Checked);
             AccessTokenDisplay.Clear();
-            IdentityTokenDisplay.Clear();
+            OtherDataDisplay.Clear();
         }
     }
 }

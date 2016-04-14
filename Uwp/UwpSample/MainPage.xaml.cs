@@ -41,7 +41,7 @@ namespace UwpSample
                 authority,
                 "native",
                 "secret",
-                "openid profile api",
+                "openid profile api offline_access",
                 WebAuthenticationBroker.GetCurrentApplicationCallbackUri().AbsoluteUri,
                 webView);
 
@@ -61,8 +61,9 @@ namespace UwpSample
                 sb.AppendLine($"{claim.Type}: {claim.Value}");
             }
 
+            sb.AppendLine($"refresh token: {result.RefreshToken}");
             sb.AppendLine($"access token: {result.AccessToken}");
-
+            
             ResultTextBox.Text = sb.ToString();
 
         }
