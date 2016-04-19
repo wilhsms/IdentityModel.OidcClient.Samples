@@ -1,22 +1,13 @@
-﻿using IdentityModel.OidcClient;
-using IdentityModel.OidcClient.IdentityTokenValidation;
+﻿using IdentityModel.Client;
+using IdentityModel.OidcClient;
 using IdentityModel.OidcClient.WebView.Uwp;
+using Newtonsoft.Json.Linq;
 using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Runtime.InteropServices.WindowsRuntime;
+using System.Net.Http;
 using System.Text;
-using Windows.Foundation;
-using Windows.Foundation.Collections;
 using Windows.Security.Authentication.Web;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Data;
-using Windows.UI.Xaml.Input;
-using Windows.UI.Xaml.Media;
-using Windows.UI.Xaml.Navigation;
 
 // The Blank Page item template is documented at http://go.microsoft.com/fwlink/?LinkId=402352&clcid=0x409
 
@@ -27,6 +18,8 @@ namespace UwpSample
     /// </summary>
     public sealed partial class MainPage : Page
     {
+        HttpClient _client;
+
         public MainPage()
         {
             this.InitializeComponent();
@@ -66,6 +59,26 @@ namespace UwpSample
             
             ResultTextBox.Text = sb.ToString();
 
+            _client = new HttpClient(result.Handler);
+            _client.BaseAddress = new Uri("https://demo.identityserver.io/api/");
+        }
+
+        private async void CallApiButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (_client == null)
+            {
+                return;
+            }
+
+            var result = await _client.GetAsync("test");
+            if (result.IsSuccessStatusCode)
+            {
+                ResultTextBox.Text = JArray.Parse(await result.Content.ReadAsStringAsync()).ToString();
+            }
+            else
+            {
+                ResultTextBox.Text = result.ReasonPhrase;
+            }
         }
     }
 }

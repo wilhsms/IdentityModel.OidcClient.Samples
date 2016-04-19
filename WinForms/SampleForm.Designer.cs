@@ -36,6 +36,7 @@
             this.AccessTokenLabel = new System.Windows.Forms.Label();
             this.IdentityTokenLabel = new System.Windows.Forms.Label();
             this.AccessTokenDisplay = new System.Windows.Forms.TextBox();
+            this.CallApiButton = new System.Windows.Forms.Button();
             this.Inputs.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -55,9 +56,10 @@
             this.Inputs.Controls.Add(this.AccessTokenLabel, 0, 1);
             this.Inputs.Controls.Add(this.IdentityTokenLabel, 0, 2);
             this.Inputs.Controls.Add(this.AccessTokenDisplay, 1, 1);
+            this.Inputs.Controls.Add(this.CallApiButton, 3, 0);
             this.Inputs.Dock = System.Windows.Forms.DockStyle.Fill;
             this.Inputs.Location = new System.Drawing.Point(0, 0);
-            this.Inputs.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
+            this.Inputs.Margin = new System.Windows.Forms.Padding(6);
             this.Inputs.Name = "Inputs";
             this.Inputs.RowCount = 3;
             this.Inputs.RowStyles.Add(new System.Windows.Forms.RowStyle());
@@ -70,7 +72,7 @@
             // 
             this.LoginButton.Dock = System.Windows.Forms.DockStyle.Fill;
             this.LoginButton.Location = new System.Drawing.Point(172, 6);
-            this.LoginButton.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
+            this.LoginButton.Margin = new System.Windows.Forms.Padding(6);
             this.LoginButton.Name = "LoginButton";
             this.LoginButton.Size = new System.Drawing.Size(188, 56);
             this.LoginButton.TabIndex = 0;
@@ -82,7 +84,7 @@
             // 
             this.LogoutButton.Dock = System.Windows.Forms.DockStyle.Fill;
             this.LogoutButton.Location = new System.Drawing.Point(372, 6);
-            this.LogoutButton.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
+            this.LogoutButton.Margin = new System.Windows.Forms.Padding(6);
             this.LogoutButton.Name = "LogoutButton";
             this.LogoutButton.Size = new System.Drawing.Size(188, 56);
             this.LogoutButton.TabIndex = 1;
@@ -95,7 +97,7 @@
             this.Silent.AutoSize = true;
             this.Silent.Dock = System.Windows.Forms.DockStyle.Fill;
             this.Silent.Location = new System.Drawing.Point(1144, 6);
-            this.Silent.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
+            this.Silent.Margin = new System.Windows.Forms.Padding(6);
             this.Silent.Name = "Silent";
             this.Silent.Size = new System.Drawing.Size(98, 56);
             this.Silent.TabIndex = 3;
@@ -107,7 +109,7 @@
             this.Inputs.SetColumnSpan(this.OtherDataDisplay, 4);
             this.OtherDataDisplay.Dock = System.Windows.Forms.DockStyle.Fill;
             this.OtherDataDisplay.Location = new System.Drawing.Point(172, 117);
-            this.OtherDataDisplay.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
+            this.OtherDataDisplay.Margin = new System.Windows.Forms.Padding(6);
             this.OtherDataDisplay.Multiline = true;
             this.OtherDataDisplay.Name = "OtherDataDisplay";
             this.OtherDataDisplay.ReadOnly = true;
@@ -143,11 +145,21 @@
             this.Inputs.SetColumnSpan(this.AccessTokenDisplay, 4);
             this.AccessTokenDisplay.Dock = System.Windows.Forms.DockStyle.Fill;
             this.AccessTokenDisplay.Location = new System.Drawing.Point(172, 74);
-            this.AccessTokenDisplay.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
+            this.AccessTokenDisplay.Margin = new System.Windows.Forms.Padding(6);
             this.AccessTokenDisplay.Name = "AccessTokenDisplay";
             this.AccessTokenDisplay.ReadOnly = true;
             this.AccessTokenDisplay.Size = new System.Drawing.Size(1070, 31);
             this.AccessTokenDisplay.TabIndex = 6;
+            // 
+            // CallApiButton
+            // 
+            this.CallApiButton.Location = new System.Drawing.Point(569, 3);
+            this.CallApiButton.Name = "CallApiButton";
+            this.CallApiButton.Size = new System.Drawing.Size(152, 59);
+            this.CallApiButton.TabIndex = 8;
+            this.CallApiButton.Text = "Call API";
+            this.CallApiButton.UseVisualStyleBackColor = true;
+            this.CallApiButton.Click += new System.EventHandler(this.CallApiButton_Click);
             // 
             // SampleForm
             // 
@@ -155,7 +167,7 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1248, 848);
             this.Controls.Add(this.Inputs);
-            this.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
+            this.Margin = new System.Windows.Forms.Padding(6);
             this.Name = "SampleForm";
             this.Text = "SampleForm";
             this.Inputs.ResumeLayout(false);
@@ -173,5 +185,6 @@
         private System.Windows.Forms.Label AccessTokenLabel;
         private System.Windows.Forms.Label IdentityTokenLabel;
         private System.Windows.Forms.TextBox AccessTokenDisplay;
+        private System.Windows.Forms.Button CallApiButton;
     }
 }

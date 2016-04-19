@@ -1,7 +1,9 @@
 ﻿using IdentityModel.OidcClient;
 using IdentityModel.OidcClient.WebView.WinForms;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Linq;
+using System.Net.Http;
 using System.Text;
 using System.Windows.Forms;
 
@@ -9,7 +11,8 @@ namespace WinForms
 {
     public partial class SampleForm : Form
     {
-        private OidcClient _client;
+        private OidcClient _oidcClient;
+        private HttpClient _apiClient;
 
         public SampleForm()
         {
@@ -26,7 +29,7 @@ namespace WinForms
                 new WinFormsWebView());
             options.UseFormPost = true;
 
-            _client = new OidcClient(options);
+            _oidcClient = new OidcClient(options);
         }
 
         private async void LoginButton_Click(object sender, EventArgs e)
@@ -34,7 +37,7 @@ namespace WinForms
             AccessTokenDisplay.Clear();
             OtherDataDisplay.Clear();
             
-            var result = await _client.LoginAsync(Silent.Checked);
+            var result = await _oidcClient.LoginAsync(Silent.Checked);
 
             if (result.Success)
             {
@@ -52,6 +55,9 @@ namespace WinForms
                 }
 
                 OtherDataDisplay.Text = sb.ToString();
+
+                _apiClient = new HttpClient(result.Handler);
+                _apiClient.BaseAddress = new Uri("https://demo.identityserver.io/api/");
             }
             else
             {
@@ -61,9 +67,27 @@ namespace WinForms
 
         private async void LogoutButton_Click(object sender, EventArgs e)
         {
-            await _client.LogoutAsync(trySilent: Silent.Checked);
+            await _oidcClient.LogoutAsync(trySilent: Silent.Checked);
             AccessTokenDisplay.Clear();
             OtherDataDisplay.Clear();
+        }
+
+        private async void CallApiButton_Click(object sender, EventArgs e)
+        {
+            if (_apiClient == null)
+            {
+                return;
+            }
+
+            var result = await _apiClient.GetAsync("test");
+            if (result.IsSuccessStatusCode)
+            {
+                OtherDataDisplay.Text = JArray.Parse(await result.Content.ReadAsStringAsync()).ToString();
+            }
+            else
+            {
+                OtherDataDisplay.Text = result.ReasonPhrase;
+            }
         }
     }
 }
