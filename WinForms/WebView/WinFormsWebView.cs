@@ -95,7 +95,7 @@ namespace IdentityModel.OidcClient.WebView.WinForms
                         {
                             form.Invoke(new Action(() => form.Show()));
                         }
-                    }, null, (int)options.Timeout.TotalSeconds * 1000, Timeout.Infinite);
+                    }, null, (int)options.InvisibleModeTimeout.TotalSeconds * 1000, Timeout.Infinite);
                 }
                 else
                 {

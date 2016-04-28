@@ -38,7 +38,7 @@
       <Private>True</Private>
     </Reference>
     <Reference Include="IdentityModel.OidcClient, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>packages\IdentityModel.OidcClient.1.0.0-beta3\lib\net45\IdentityModel.OidcClient.dll</HintPath>
+      <HintPath>packages\IdentityModel.OidcClient.1.0.0\lib\net45\IdentityModel.OidcClient.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="jose-pcl, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
