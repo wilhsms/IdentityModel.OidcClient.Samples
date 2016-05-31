@@ -31,12 +31,12 @@ namespace UwpSample
             var webView = new UwpWebView(enableWindowsAuthentication: false);
 
             var options = new OidcClientOptions(
-                authority,
-                "native",
-                "secret",
-                "openid profile api offline_access",
-                WebAuthenticationBroker.GetCurrentApplicationCallbackUri().AbsoluteUri,
-                webView);
+                authority:    authority,
+                clientId:     "native",
+                clientSecret: "secret",
+                scope:        "openid profile api offline_access",
+                redirectUri:  WebAuthenticationBroker.GetCurrentApplicationCallbackUri().AbsoluteUri,
+                webView:      webView);
 
             var client = new OidcClient(options);
             var result = await client.LoginAsync();
