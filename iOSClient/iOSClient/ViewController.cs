@@ -36,7 +36,7 @@ namespace iOSClient
 				authority,
 				"native",
 				"secret",
-				"openid profile api offline_access",
+				"openid profile api",
 				"io.identitymodel.native://callback");
 
 			_client = new OidcClient(options);
@@ -83,8 +83,11 @@ namespace iOSClient
 			sb.AppendFormat ("\n{0}: {1}\n", "access token", result.AccessToken);
 
 			OutputTextView.Text = sb.ToString ();
-			_apiClient = new HttpClient (result.Handler);
+			_apiClient = new HttpClient ();
+			_apiClient.SetBearerToken (result.AccessToken);
 			_apiClient.BaseAddress = new Uri ("https://demo.identityserver.io/api/");
+
+
 		}
 
 		public override void DidReceiveMemoryWarning ()
