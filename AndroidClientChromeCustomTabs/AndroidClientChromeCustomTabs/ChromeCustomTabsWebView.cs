@@ -1,18 +1,10 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Android.App;
 using Android.Content;
-using Android.OS;
-using Android.Runtime;
-using Android.Views;
-using Android.Widget;
-using IdentityModel.OidcClient.WebView;
-using Android.Support.CustomTabs;
 using Android.Graphics;
-using Android.Content.PM;
+using Android.Support.CustomTabs;
+using IdentityModel.OidcClient.WebView;
+using System;
+using System.Threading.Tasks;
 
 namespace AndroidClientChromeCustomTabs
 {
@@ -23,7 +15,6 @@ namespace AndroidClientChromeCustomTabs
 
         private readonly Activity _context;
         private CustomTabsActivityManager _customTabs;
-        private TaskCompletionSource<InvokeResult> _tcs;
 
         public ChromeCustomTabsWebView(Activity context)
         {
@@ -32,9 +23,19 @@ namespace AndroidClientChromeCustomTabs
 
         public Task<InvokeResult> InvokeAsync(InvokeOptions options)
         {
+            if (string.IsNullOrWhiteSpace(options.StartUrl))
+            {
+                throw new ArgumentException("Missing StartUrl", nameof(options));
+            }
+
+            if (string.IsNullOrWhiteSpace(options.EndUrl))
+            {
+                throw new ArgumentException("Missing EndUrl", nameof(options));
+            }
+
             // must be able to wait for the intent to be finished to continue
             // with setting the task result
-            _tcs = new TaskCompletionSource<InvokeResult>();
+            var _tcs = new TaskCompletionSource<InvokeResult>();
 
             // create & open chrome custom tab
             _customTabs = new CustomTabsActivityManager(_context);
@@ -47,25 +48,37 @@ namespace AndroidClientChromeCustomTabs
             
             var customTabsIntent = builder.Build();
 
+            // ensures the intent is not kept in the history stack, which makes
+            // sure navigating away from it will close it
             customTabsIntent.Intent.AddFlags(ActivityFlags.NoHistory);
-          //  customTabsIntent.Intent.AddFlags(ActivityFlags.ClearTop);
 
-            AndroidClientChromeCustomTabsApplication.Mediator.ActivityMessageReceived
-                += (response) =>
+            ActivityMediator.MessageReceivedEventHandler callback = null;
+            callback = (response) =>
+            {
+                // remove handler
+                AndroidClientChromeCustomTabsApplication
+                .Mediator.ActivityMessageReceived -= callback;
+
+                // set result
+                _tcs.SetResult(new InvokeResult
                 {
-                    _tcs.SetResult(new InvokeResult
-                    {
-                        Response = response,
-                        ResultType = InvokeResultType.Success
-                    });
-                };             
+                    Response = response,
+                    ResultType = InvokeResultType.Success
+                });
+
+                // start MainActivity (will close the custom tab)
+                _context.StartActivity(typeof(MainActivity));
+            };
+
+            // attach handler
+            AndroidClientChromeCustomTabsApplication.Mediator.ActivityMessageReceived
+                += callback;     
 
             // launch
             customTabsIntent.LaunchUrl(_context, Android.Net.Uri.Parse(options.StartUrl));
 
-             // need an intent to be triggered when browsing to the "io.identitymodel.native://callback"
+            // need an intent to be triggered when browsing to the "io.identitymodel.native://callback"
             // scheme/URI => CallbackInterceptorActivity
-
             return _tcs.Task;
         } 
     }
