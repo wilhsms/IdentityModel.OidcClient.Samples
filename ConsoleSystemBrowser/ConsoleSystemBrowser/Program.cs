@@ -38,11 +38,14 @@ namespace ConsoleSystemBrowser
 
             var options = new OidcClientOptions(
                 "https://demo.identityserver.io",
-                "native.code",
+                "native",
                 "secret",
                 "openid profile api",
-                redirectUri);
-            options.Style = OidcClientOptions.AuthenticationStyle.AuthorizationCode;
+                redirectUri)
+            {
+                UseFormPost = true,
+                Style = OidcClientOptions.AuthenticationStyle.Hybrid
+            };
 
             var client = new OidcClient(options);
             var state = await client.PrepareLoginAsync();
@@ -55,6 +58,8 @@ namespace ConsoleSystemBrowser
             // wait for the authorization response.
             var context = await http.GetContextAsync();
 
+            var formData = GetRequestPostData(context.Request);
+
             // Brings the Console to Focus.
             BringConsoleToFront();
 
@@ -66,9 +71,9 @@ namespace ConsoleSystemBrowser
             var responseOutput = response.OutputStream;
             await responseOutput.WriteAsync(buffer, 0, buffer.Length);
             responseOutput.Close();
-            
-            Console.WriteLine($"Redirect URL: {context.Request.Url.AbsoluteUri}");
-            var result = await client.ValidateResponseAsync(context.Request.Url.AbsoluteUri, state);
+
+            Console.WriteLine($"Form Data: {formData}");
+            var result = await client.ValidateResponseAsync(formData, state);
 
             if (result.Success)
             {
@@ -106,6 +111,22 @@ namespace ConsoleSystemBrowser
         public void BringConsoleToFront()
         {
             SetForegroundWindow(GetConsoleWindow());
+        }
+
+        public static string GetRequestPostData(HttpListenerRequest request)
+        {
+            if (!request.HasEntityBody)
+            {
+                return null;
+            }
+
+            using (var body = request.InputStream)
+            {
+                using (var reader = new System.IO.StreamReader(body, request.ContentEncoding))
+                {
+                    return reader.ReadToEnd();
+                }
+            }
         }
     }
 }
