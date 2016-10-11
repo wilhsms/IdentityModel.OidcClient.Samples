@@ -21,6 +21,8 @@ namespace AndroidClientChromeCustomTabs
 
             // get URI, send with mediator
             AndroidClientChromeCustomTabsApplication.Mediator.Send(Intent.DataString);
+
+            StartActivity(typeof(MainActivity));
         }
     }
 }

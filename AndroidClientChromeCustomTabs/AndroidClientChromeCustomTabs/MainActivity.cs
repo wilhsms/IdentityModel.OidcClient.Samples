@@ -6,6 +6,7 @@ using Java.Lang;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Net.Http;
+using Android.Content;
 
 namespace AndroidClientChromeCustomTabs
 {
@@ -38,7 +39,7 @@ namespace AndroidClientChromeCustomTabs
             Button btnCallApi = FindViewById<Button>(Resource.Id.button1);
             btnCallApi.Click += BtnCallApi_Click;
         }
-          
+
         private async void Button_Click(object sender, EventArgs e)
         {
             var authority = "https://demo.identityserver.io";
@@ -47,7 +48,7 @@ namespace AndroidClientChromeCustomTabs
                 authority,
                 "native",
                 "secret",
-                "openid profile api offline_access",
+                "openid profile api",
                 "io.identitymodel.native://callback", 
                 new ChromeCustomTabsWebView(this));
 
@@ -68,12 +69,16 @@ namespace AndroidClientChromeCustomTabs
                 sb.Append(string.Format("{0}: {1}\n", claim.Type, claim.Value));
             }
 
-            sb.Append(string.Format("\n{0}: {1}\n", "refresh token", result.RefreshToken));
+            //sb.Append(string.Format("\n{0}: {1}\n", "refresh token", result.RefreshToken));
             sb.Append(string.Format("\n{0}: {1}\n", "access token", result.AccessToken));
 
             txtResult.Text = sb.ToString();
 
-            _apiClient = new HttpClient(result.Handler);
+            // commented out since no refresh token
+            //_apiClient = new HttpClient(result.Handler);
+            _apiClient = new HttpClient();
+            // added since not using result.Handler above
+            _apiClient.SetBearerToken(result.AccessToken);
             _apiClient.BaseAddress = new Uri("https://demo.identityserver.io/api/");
         }
 

@@ -56,8 +56,10 @@ namespace AndroidClientChromeCustomTabs
             callback = (response) =>
             {
                 // remove handler
-                AndroidClientChromeCustomTabsApplication
-                .Mediator.ActivityMessageReceived -= callback;
+                AndroidClientChromeCustomTabsApplication.Mediator.ActivityMessageReceived -= callback;
+
+                // start MainActivity (will close the custom tab)
+                //_context.StartActivity(typeof(MainActivity));
 
                 // set result
                 _tcs.SetResult(new InvokeResult
@@ -65,14 +67,10 @@ namespace AndroidClientChromeCustomTabs
                     Response = response,
                     ResultType = InvokeResultType.Success
                 });
-
-                // start MainActivity (will close the custom tab)
-                _context.StartActivity(typeof(MainActivity));
             };
 
             // attach handler
-            AndroidClientChromeCustomTabsApplication.Mediator.ActivityMessageReceived
-                += callback;     
+            AndroidClientChromeCustomTabsApplication.Mediator.ActivityMessageReceived += callback;     
 
             // launch
             customTabsIntent.LaunchUrl(_context, Android.Net.Uri.Parse(options.StartUrl));
