@@ -1,4 +1,5 @@
 ﻿using IdentityModel.OidcClient;
+using Serilog;
 using System;
 using System.Diagnostics;
 using System.Net;
@@ -11,6 +12,12 @@ namespace ConsoleSystemBrowser
     {
         static void Main(string[] args)
         {
+            // setup logging
+            Log.Logger = new LoggerConfiguration()
+                .MinimumLevel.Debug()
+                .WriteTo.LiterateConsole()
+                .CreateLogger();
+
             Console.WriteLine("+-----------------------+");
             Console.WriteLine("|  Sign in with OIDC    |");
             Console.WriteLine("+-----------------------+");
