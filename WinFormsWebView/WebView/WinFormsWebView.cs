@@ -27,7 +27,7 @@ namespace IdentityModel.OidcClient.WebView.WinForms
             })
         { }
 
-        public event EventHandler<HiddenModeFailedEventArgs> HiddenModeFailed;
+        //public event EventHandler<HiddenModeFailedEventArgs> HiddenModeFailed;
 
         public async Task<InvokeResult> InvokeAsync(InvokeOptions options)
         {
@@ -81,21 +81,21 @@ namespace IdentityModel.OidcClient.WebView.WinForms
                 System.Threading.Timer timer = null;
                 if (options.InitialDisplayMode != DisplayMode.Visible)
                 {
-                    result.ResultType = InvokeResultType.Timeout;
-                    timer = new System.Threading.Timer((o) =>
-                    {
-                        var args = new HiddenModeFailedEventArgs(result);
-                        HiddenModeFailed?.Invoke(this, args);
-                        if (args.Cancel)
-                        {
-                            browser.Stop();
-                            form.Invoke(new Action(() => form.Close()));
-                        }
-                        else
-                        {
-                            form.Invoke(new Action(() => form.Show()));
-                        }
-                    }, null, (int)options.InvisibleModeTimeout.TotalSeconds * 1000, Timeout.Infinite);
+                    //result.ResultType = InvokeResultType.Timeout;
+                    //timer = new System.Threading.Timer((o) =>
+                    //{
+                    //    var args = new HiddenModeFailedEventArgs(result);
+                    //    HiddenModeFailed?.Invoke(this, args);
+                    //    if (args.Cancel)
+                    //    {
+                    //        browser.Stop();
+                    //        form.Invoke(new Action(() => form.Close()));
+                    //    }
+                    //    else
+                    //    {
+                    //        form.Invoke(new Action(() => form.Show()));
+                    //    }
+                    //}, null, (int)options.InvisibleModeTimeout.TotalSeconds * 1000, Timeout.Infinite);
                 }
                 else
                 {

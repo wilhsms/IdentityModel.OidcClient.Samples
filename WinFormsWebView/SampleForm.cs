@@ -21,11 +21,11 @@ namespace WinForms
             var authority = "https://demo.identityserver.io";
 
             var options = new OidcClientOptions(
-                authority, 
+                authority,
+                "openid email api offline_access",
+                "http://localhost/winforms.client",
                 "native", 
                 "secret", 
-                "openid email api offline_access",
-                "http://localhost/winforms.client", 
                 new WinFormsWebView());
             options.UseFormPost = true;
 
@@ -44,7 +44,7 @@ namespace WinForms
                 AccessTokenDisplay.Text = result.AccessToken;
 
                 var sb = new StringBuilder(128);
-                foreach (var claim in result.Claims)
+                foreach (var claim in result.User.Claims)
                 {
                     sb.AppendLine($"{claim.Type}: {claim.Value}");
                 }
