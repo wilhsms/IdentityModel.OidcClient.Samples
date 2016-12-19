@@ -5,12 +5,15 @@ using System.Diagnostics;
 using System.Net;
 using System.Runtime.InteropServices;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace ConsoleSystemBrowser
 {
     class Program
     {
-        static void Main(string[] args)
+        static void Main(string[] args) => MainAsync().GetAwaiter().GetResult();
+
+        static async Task MainAsync()
         {
             // setup logging
             Log.Logger = new LoggerConfiguration()
@@ -25,13 +28,12 @@ namespace ConsoleSystemBrowser
             Console.WriteLine("Press any key to sign in...");
             Console.ReadKey();
 
-            Program p = new Program();
-            p.SignIn();
+            await SignInAsync();
 
             Console.ReadKey();
         }
 
-        private async void SignIn()
+        private static async Task SignInAsync()
         {
             // create a redirect URI using an available port on the loopback address.
             string redirectUri = string.Format("http://127.0.0.1:7890/");
@@ -58,7 +60,7 @@ namespace ConsoleSystemBrowser
             var state = await client.PrepareLoginAsync();
 
             Console.WriteLine($"Start URL: {state.StartUrl}");
-            
+
             // open system browser to start authentication
             Process.Start(state.StartUrl);
 
@@ -78,32 +80,51 @@ namespace ConsoleSystemBrowser
             var responseOutput = response.OutputStream;
             await responseOutput.WriteAsync(buffer, 0, buffer.Length);
             responseOutput.Close();
+            http.Stop();
 
             Console.WriteLine($"Form Data: {formData}");
             var result = await client.ValidateResponseAsync(formData, state);
 
-            if (result.Success)
-            {
-                Console.WriteLine("\n\nClaims:");
-                foreach (var claim in result.Claims)
-                {
-                    Console.WriteLine("{0}: {1}", claim.Type, claim.Value);
-                }
-
-                Console.WriteLine();
-                Console.WriteLine("Access token:\n{0}", result.AccessToken);
-
-                if (!string.IsNullOrWhiteSpace(result.RefreshToken))
-                {
-                    Console.WriteLine("Refresh token:\n{0}", result.RefreshToken);
-                }
-            }
-            else
+            if (!result.Success)
             {
                 Console.WriteLine("\n\nError:\n{0}", result.Error);
+                return;
             }
 
-            http.Stop();
+            Console.WriteLine("\n\nClaims:");
+            foreach (var claim in result.Claims)
+            {
+                Console.WriteLine("{0}: {1}", claim.Type, claim.Value);
+            }
+
+            Console.WriteLine();
+            Console.WriteLine("Access token:\n{0}", result.AccessToken);
+
+            if (!string.IsNullOrWhiteSpace(result.RefreshToken))
+            {
+                Console.WriteLine("Refresh token:\n{0}", result.RefreshToken);
+                var refreshToken = result.RefreshToken;
+
+                while (true)
+                {
+                    Console.WriteLine("\n\npress return to refresh token");
+                    Console.ReadLine();
+
+                    var refreshResult = await client.RefreshTokenAsync(refreshToken);
+                    if (!refreshResult.Success)
+                    {
+                        Console.WriteLine(refreshResult.Error);
+                    }
+                    else
+                    {
+                        Console.WriteLine();
+                        Console.WriteLine("Access token:\n{0}", refreshResult.AccessToken);
+                        Console.WriteLine("Refresh token:\n{0}", refreshResult.RefreshToken);
+
+                        refreshToken = refreshResult.RefreshToken;
+                    }
+                }
+            }
         }
 
         // Hack to bring the Console window to front.
@@ -115,7 +136,7 @@ namespace ConsoleSystemBrowser
         [return: MarshalAs(UnmanagedType.Bool)]
         public static extern bool SetForegroundWindow(IntPtr hWnd);
 
-        public void BringConsoleToFront()
+        public static void BringConsoleToFront()
         {
             SetForegroundWindow(GetConsoleWindow());
         }
