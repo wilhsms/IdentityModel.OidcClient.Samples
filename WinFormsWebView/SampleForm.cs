@@ -14,16 +14,17 @@ namespace WinForms
         private OidcClient _oidcClient;
         private HttpClient _apiClient;
 
+        string _authority = "https://demo.identityserver.io";
+        string api = "https://api.identityserver.io/identity";
+
         public SampleForm()
         {
             InitializeComponent();
 
-            var authority = "https://demo.identityserver.io";
-
             var options = new OidcClientOptions(
-                authority, 
-                "native", 
-                "secret", 
+                _authority, 
+                "native.hybrid", 
+                "", 
                 "openid email api offline_access",
                 "http://localhost/winforms.client", 
                 new WinFormsWebView());
@@ -57,7 +58,7 @@ namespace WinForms
                 OtherDataDisplay.Text = sb.ToString();
 
                 _apiClient = new HttpClient(result.Handler);
-                _apiClient.BaseAddress = new Uri("https://demo.identityserver.io/api/");
+                _apiClient.BaseAddress = new Uri("https://api.identityserver.io/");
             }
             else
             {
@@ -79,7 +80,7 @@ namespace WinForms
                 return;
             }
 
-            var result = await _apiClient.GetAsync("test");
+            var result = await _apiClient.GetAsync("identity");
             if (result.IsSuccessStatusCode)
             {
                 OtherDataDisplay.Text = JArray.Parse(await result.Content.ReadAsStringAsync()).ToString();

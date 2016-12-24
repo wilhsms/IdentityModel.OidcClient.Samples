@@ -1,8 +1,10 @@
 ﻿using IdentityModel.OidcClient;
+using Newtonsoft.Json.Linq;
 using Serilog;
 using System;
 using System.Diagnostics;
 using System.Net;
+using System.Net.Http;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
@@ -11,6 +13,9 @@ namespace ConsoleSystemBrowser
 {
     class Program
     {
+        static string _authority = "https://demo.identityserver.io";
+        static string _api = "https://api.identityserver.io/identity";
+
         static void Main(string[] args) => MainAsync().GetAwaiter().GetResult();
 
         static async Task MainAsync()
@@ -46,9 +51,9 @@ namespace ConsoleSystemBrowser
             http.Start();
 
             var options = new OidcClientOptions(
-                "https://demo.identityserver.io",
-                "native",
-                "secret",
+                _authority,
+                "native.hybrid",
+                "",
                 "openid profile api",
                 redirectUri)
             {
@@ -99,6 +104,15 @@ namespace ConsoleSystemBrowser
 
             Console.WriteLine();
             Console.WriteLine("Access token:\n{0}", result.AccessToken);
+
+            Console.WriteLine("\n\npress return to call an API");
+            Console.ReadLine();
+
+            var apiClient = new HttpClient();
+            apiClient.SetBearerToken(result.AccessToken);
+
+            var apiResponse = await apiClient.GetStringAsync(_api);
+            Console.WriteLine(JArray.Parse(apiResponse));
 
             if (!string.IsNullOrWhiteSpace(result.RefreshToken))
             {
