@@ -18,16 +18,24 @@ namespace WinForms
         {
             InitializeComponent();
 
-            var authority = "https://demo.identityserver.io";
+            var options = new OidcClientOptions
+            {
+                Authority = "https://demo.identityserver.io",
+                ClientId = "native.hybrid",
+                Scope = "openid email api offline_access",
+                RedirectUri = "http://localhost/winforms.client",
 
-            var options = new OidcClientOptions(
-                authority,
-                "openid email api offline_access",
-                "http://localhost/winforms.client",
-                "native", 
-                "secret", 
-                new WinFormsWebView());
-            options.UseFormPost = true;
+                Browser = new WinFormsWebView()
+            };
+
+            //var options = new OidcClientOptions(
+            //    authority,
+            //    "openid email api offline_access",
+            //    "http://localhost/winforms.client",
+            //    "native", 
+            //    "secret", 
+            //    new WinFormsWebView());
+            //options.UseFormPost = true;
 
             _oidcClient = new OidcClient(options);
         }
@@ -39,7 +47,11 @@ namespace WinForms
             
             var result = await _oidcClient.LoginAsync(Silent.Checked);
 
-            if (result.Success)
+            if (result.IsError)
+            {
+                MessageBox.Show(this, result.Error, "Login", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+            else
             {
                 AccessTokenDisplay.Text = result.AccessToken;
 
@@ -56,20 +68,16 @@ namespace WinForms
 
                 OtherDataDisplay.Text = sb.ToString();
 
-                _apiClient = new HttpClient(result.Handler);
+                _apiClient = new HttpClient(result.RefreshTokenHandler);
                 _apiClient.BaseAddress = new Uri("https://demo.identityserver.io/api/");
-            }
-            else
-            {
-                MessageBox.Show(this, result.Error, "Login", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
         private async void LogoutButton_Click(object sender, EventArgs e)
         {
-            await _oidcClient.LogoutAsync(trySilent: Silent.Checked);
-            AccessTokenDisplay.Clear();
-            OtherDataDisplay.Clear();
+            //await _oidcClient.LogoutAsync(trySilent: Silent.Checked);
+            //AccessTokenDisplay.Clear();
+            //OtherDataDisplay.Clear();
         }
 
         private async void CallApiButton_Click(object sender, EventArgs e)

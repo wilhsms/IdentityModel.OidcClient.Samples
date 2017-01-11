@@ -28,15 +28,17 @@ namespace UwpSample
         private async void LoginButton_Click(object sender, RoutedEventArgs e)
         {
             var authority = "https://demo.identityserver.io";
-            var webView = new UwpWebView(enableWindowsAuthentication: false);
+            var browser = new UwpWebView(enableWindowsAuthentication: false);
 
-            var options = new OidcClientOptions(
-                authority:    authority,
-                clientId:     "native",
-                clientSecret: "secret",
-                scope:        "openid profile api offline_access",
-                redirectUri:  WebAuthenticationBroker.GetCurrentApplicationCallbackUri().AbsoluteUri,
-                webView:      webView);
+            var options = new OidcClientOptions
+            {
+                Authority = authority,
+                ClientId = "native.hybrid",
+                Scope = "openid profile api offline_access",
+                RedirectUri = WebAuthenticationBroker.GetCurrentApplicationCallbackUri().AbsoluteUri,
+
+                Browser = browser
+            };
 
             var client = new OidcClient(options);
             var result = await client.LoginAsync();
@@ -49,7 +51,7 @@ namespace UwpSample
 
             var sb = new StringBuilder(128);
 
-            foreach (var claim in result.Claims)
+            foreach (var claim in result.User.Claims)
             {
                 sb.AppendLine($"{claim.Type}: {claim.Value}");
             }
@@ -59,7 +61,7 @@ namespace UwpSample
             
             ResultTextBox.Text = sb.ToString();
 
-            _client = new HttpClient(result.Handler);
+            _client = new HttpClient(result.RefreshTokenHandler);
             _client.BaseAddress = new Uri("https://demo.identityserver.io/api/");
         }
 

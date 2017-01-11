@@ -1,4 +1,5 @@
-﻿using System;
+﻿using IdentityModel.OidcClient.Browser;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,7 +9,7 @@ using System.Windows.Forms;
 
 namespace IdentityModel.OidcClient.WebView.WinForms
 {
-    public class WinFormsWebView : IWebView
+    public class WinFormsWebView : IBrowser
     {
         private readonly Func<Form> _formFactory;
 
@@ -29,7 +30,7 @@ namespace IdentityModel.OidcClient.WebView.WinForms
 
         //public event EventHandler<HiddenModeFailedEventArgs> HiddenModeFailed;
 
-        public async Task<InvokeResult> InvokeAsync(InvokeOptions options)
+        public async Task<BrowserResult> InvokeAsync(BrowserOptions options)
         {
             using (var form = _formFactory.Invoke())
             using (var browser = new ExtendedWebBrowser()
@@ -39,9 +40,9 @@ namespace IdentityModel.OidcClient.WebView.WinForms
             {
                 var signal = new SemaphoreSlim(0, 1);
 
-                var result = new InvokeResult
+                var result = new BrowserResult
                 {
-                    ResultType = InvokeResultType.UserCancel
+                    ResultType = BrowserResultType.UserCancel
                 };
 
                 form.FormClosed += (o, e) =>
@@ -52,7 +53,7 @@ namespace IdentityModel.OidcClient.WebView.WinForms
                 browser.NavigateError += (o, e) =>
                 {
                     e.Cancel = true;
-                    result.ResultType = InvokeResultType.HttpError;
+                    result.ResultType = BrowserResultType.HttpError;
                     result.Error = e.StatusCode.ToString();
                     signal.Release();
                 };
@@ -62,8 +63,8 @@ namespace IdentityModel.OidcClient.WebView.WinForms
                     if (e.Url.StartsWith(options.EndUrl))
                     {
                         e.Cancel = true;
-                        result.ResultType = InvokeResultType.Success;
-                        if (options.ResponseMode == ResponseMode.FormPost)
+                        result.ResultType = BrowserResultType.Success;
+                        if (options.ResponseMode == OidcClientOptions.AuthorizeResponseMode.FormPost)
                         {
                             result.Response = Encoding.UTF8.GetString(e.PostData ?? new byte[] { });
                         }
@@ -79,7 +80,7 @@ namespace IdentityModel.OidcClient.WebView.WinForms
                 browser.Show();
 
                 System.Threading.Timer timer = null;
-                if (options.InitialDisplayMode != DisplayMode.Visible)
+                if (options.DisplayMode != DisplayMode.Visible)
                 {
                     //result.ResultType = InvokeResultType.Timeout;
                     //timer = new System.Threading.Timer((o) =>
