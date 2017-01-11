@@ -69,7 +69,7 @@ namespace WinForms
                 OtherDataDisplay.Text = sb.ToString();
 
                 _apiClient = new HttpClient(result.RefreshTokenHandler);
-                _apiClient.BaseAddress = new Uri("https://demo.identityserver.io/api/");
+                _apiClient.BaseAddress = new Uri("https://api.identityserver.io/");
             }
         }
 
@@ -87,7 +87,7 @@ namespace WinForms
                 return;
             }
 
-            var result = await _apiClient.GetAsync("test");
+            var result = await _apiClient.GetAsync("identity");
             if (result.IsSuccessStatusCode)
             {
                 OtherDataDisplay.Text = JArray.Parse(await result.Content.ReadAsStringAsync()).ToString();
