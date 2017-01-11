@@ -46,8 +46,8 @@ namespace AndroidClientChromeCustomTabs
 
             var options = new OidcClientOptions(
                 authority,
-                "native",
-                "secret",
+                "native.hybrid",
+                "xoxo",
                 "openid profile api",
                 "io.identitymodel.native://callback", 
                 new ChromeCustomTabsWebView(this));
@@ -79,7 +79,7 @@ namespace AndroidClientChromeCustomTabs
             _apiClient = new HttpClient();
             // added since not using result.Handler above
             _apiClient.SetBearerToken(result.AccessToken);
-            _apiClient.BaseAddress = new Uri("https://demo.identityserver.io/api/");
+            _apiClient.BaseAddress = new Uri("https://api.identityserver.io/");
         }
 
         private async void BtnCallApi_Click(object sender, EventArgs e)
@@ -91,7 +91,7 @@ namespace AndroidClientChromeCustomTabs
 
             var txtResult = FindViewById<EditText>(Resource.Id.editText1);
 
-            var result = await _apiClient.GetAsync("test");
+            var result = await _apiClient.GetAsync("identity");
             if (result.IsSuccessStatusCode)
             {
                 txtResult.Text = JArray.Parse(await result.Content.ReadAsStringAsync()).ToString();
