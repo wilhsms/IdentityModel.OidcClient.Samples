@@ -28,15 +28,6 @@ namespace WinForms
                 Browser = new WinFormsWebView()
             };
 
-            //var options = new OidcClientOptions(
-            //    authority,
-            //    "openid email api offline_access",
-            //    "http://localhost/winforms.client",
-            //    "native", 
-            //    "secret", 
-            //    new WinFormsWebView());
-            //options.UseFormPost = true;
-
             _oidcClient = new OidcClient(options);
         }
 
