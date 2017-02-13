@@ -1,31 +1,16 @@
 ﻿using IdentityModel.OidcClient;
-using Newtonsoft.Json.Linq;
-using Serilog;
 using System;
 using System.Diagnostics;
 using System.Net;
-using System.Net.Http;
 using System.Runtime.InteropServices;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace ConsoleSystemBrowser
 {
     class Program
     {
-        static string _authority = "https://demo.identityserver.io";
-        static string _api = "https://api.identityserver.io/identity";
-
-        static void Main(string[] args) => MainAsync().GetAwaiter().GetResult();
-
-        static async Task MainAsync()
+        static void Main(string[] args)
         {
-            // setup logging
-            Log.Logger = new LoggerConfiguration()
-                .MinimumLevel.Debug()
-                .WriteTo.LiterateConsole()
-                .CreateLogger();
-
             Console.WriteLine("+-----------------------+");
             Console.WriteLine("|  Sign in with OIDC    |");
             Console.WriteLine("+-----------------------+");
@@ -33,12 +18,13 @@ namespace ConsoleSystemBrowser
             Console.WriteLine("Press any key to sign in...");
             Console.ReadKey();
 
-            await SignInAsync();
+            Program p = new Program();
+            p.SignIn();
 
             Console.ReadKey();
         }
 
-        private static async Task SignInAsync()
+        private async void SignIn()
         {
             // create a redirect URI using an available port on the loopback address.
             string redirectUri = string.Format("http://127.0.0.1:7890/");
@@ -50,22 +36,28 @@ namespace ConsoleSystemBrowser
             Console.WriteLine("Listening..");
             http.Start();
 
-            var options = new OidcClientOptions(
-                _authority,
-                "native.hybrid",
-                "",
-                "openid profile api",
-                redirectUri)
+            var options = new OidcClientOptions
             {
-                UseFormPost = true,
-                Style = OidcClientOptions.AuthenticationStyle.Hybrid
+                Authority = "https://demo.identityserver.io",
+                ClientId = "native.hybrid",
+                Scope = "openid profile api",
+                RedirectUri = redirectUri
             };
+                
+            //    "native",
+            //    "secret",
+            //    "openid profile api",
+            //    redirectUri)
+            //{
+            //    UseFormPost = true,
+            //    Style = OidcClientOptions.AuthenticationStyle.Hybrid
+            //};
 
             var client = new OidcClient(options);
             var state = await client.PrepareLoginAsync();
 
             Console.WriteLine($"Start URL: {state.StartUrl}");
-
+            
             // open system browser to start authentication
             Process.Start(state.StartUrl);
 
@@ -85,60 +77,32 @@ namespace ConsoleSystemBrowser
             var responseOutput = response.OutputStream;
             await responseOutput.WriteAsync(buffer, 0, buffer.Length);
             responseOutput.Close();
-            http.Stop();
 
             Console.WriteLine($"Form Data: {formData}");
-            var result = await client.ValidateResponseAsync(formData, state);
+            var result = await client.ProcessResponseAsync(formData, state);
 
-            if (!result.Success)
+            if (result.IsError)
             {
                 Console.WriteLine("\n\nError:\n{0}", result.Error);
-                return;
             }
-
-            Console.WriteLine("\n\nClaims:");
-            foreach (var claim in result.Claims)
+            else
             {
-                Console.WriteLine("{0}: {1}", claim.Type, claim.Value);
-            }
-
-            Console.WriteLine();
-            Console.WriteLine("Access token:\n{0}", result.AccessToken);
-
-            Console.WriteLine("\n\npress return to call an API");
-            Console.ReadLine();
-
-            var apiClient = new HttpClient();
-            apiClient.SetBearerToken(result.AccessToken);
-
-            var apiResponse = await apiClient.GetStringAsync(_api);
-            Console.WriteLine(JArray.Parse(apiResponse));
-
-            if (!string.IsNullOrWhiteSpace(result.RefreshToken))
-            {
-                Console.WriteLine("Refresh token:\n{0}", result.RefreshToken);
-                var refreshToken = result.RefreshToken;
-
-                while (true)
+                Console.WriteLine("\n\nClaims:");
+                foreach (var claim in result.User.Claims)
                 {
-                    Console.WriteLine("\n\npress return to refresh token");
-                    Console.ReadLine();
+                    Console.WriteLine("{0}: {1}", claim.Type, claim.Value);
+                }
 
-                    var refreshResult = await client.RefreshTokenAsync(refreshToken);
-                    if (!refreshResult.Success)
-                    {
-                        Console.WriteLine(refreshResult.Error);
-                    }
-                    else
-                    {
-                        Console.WriteLine();
-                        Console.WriteLine("Access token:\n{0}", refreshResult.AccessToken);
-                        Console.WriteLine("Refresh token:\n{0}", refreshResult.RefreshToken);
+                Console.WriteLine();
+                Console.WriteLine("Access token:\n{0}", result.AccessToken);
 
-                        refreshToken = refreshResult.RefreshToken;
-                    }
+                if (!string.IsNullOrWhiteSpace(result.RefreshToken))
+                {
+                    Console.WriteLine("Refresh token:\n{0}", result.RefreshToken);
                 }
             }
+
+            http.Stop();
         }
 
         // Hack to bring the Console window to front.
@@ -150,7 +114,7 @@ namespace ConsoleSystemBrowser
         [return: MarshalAs(UnmanagedType.Bool)]
         public static extern bool SetForegroundWindow(IntPtr hWnd);
 
-        public static void BringConsoleToFront()
+        public void BringConsoleToFront()
         {
             SetForegroundWindow(GetConsoleWindow());
         }

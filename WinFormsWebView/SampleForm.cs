@@ -1,4 +1,5 @@
 ﻿using IdentityModel.OidcClient;
+using IdentityModel.OidcClient.Browser;
 using IdentityModel.OidcClient.WebView.WinForms;
 using Newtonsoft.Json.Linq;
 using System;
@@ -14,21 +15,19 @@ namespace WinForms
         private OidcClient _oidcClient;
         private HttpClient _apiClient;
 
-        string _authority = "https://demo.identityserver.io";
-        string api = "https://api.identityserver.io/identity";
-
         public SampleForm()
         {
             InitializeComponent();
 
-            var options = new OidcClientOptions(
-                _authority, 
-                "native.hybrid", 
-                "", 
-                "openid email api offline_access",
-                "http://localhost/winforms.client", 
-                new WinFormsWebView());
-            options.UseFormPost = true;
+            var options = new OidcClientOptions
+            {
+                Authority = "https://demo.identityserver.io",
+                ClientId = "native.hybrid",
+                Scope = "openid email api offline_access",
+                RedirectUri = "http://localhost/winforms.client",
+
+                Browser = new WinFormsWebView()
+            };
 
             _oidcClient = new OidcClient(options);
         }
@@ -37,15 +36,19 @@ namespace WinForms
         {
             AccessTokenDisplay.Clear();
             OtherDataDisplay.Clear();
-            
-            var result = await _oidcClient.LoginAsync(Silent.Checked);
 
-            if (result.Success)
+            var result = await _oidcClient.LoginAsync(DisplayMode.Visible);
+
+            if (result.IsError)
+            {
+                MessageBox.Show(this, result.Error, "Login", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+            else
             {
                 AccessTokenDisplay.Text = result.AccessToken;
 
                 var sb = new StringBuilder(128);
-                foreach (var claim in result.Claims)
+                foreach (var claim in result.User.Claims)
                 {
                     sb.AppendLine($"{claim.Type}: {claim.Value}");
                 }
@@ -57,20 +60,16 @@ namespace WinForms
 
                 OtherDataDisplay.Text = sb.ToString();
 
-                _apiClient = new HttpClient(result.Handler);
+                _apiClient = new HttpClient(result.RefreshTokenHandler);
                 _apiClient.BaseAddress = new Uri("https://api.identityserver.io/");
-            }
-            else
-            {
-                MessageBox.Show(this, result.Error, "Login", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
         private async void LogoutButton_Click(object sender, EventArgs e)
         {
-            await _oidcClient.LogoutAsync(trySilent: Silent.Checked);
-            AccessTokenDisplay.Clear();
-            OtherDataDisplay.Clear();
+            //await _oidcClient.LogoutAsync(trySilent: Silent.Checked);
+            //AccessTokenDisplay.Clear();
+            //OtherDataDisplay.Clear();
         }
 
         private async void CallApiButton_Click(object sender, EventArgs e)

@@ -20,9 +20,6 @@ namespace UwpSample
     {
         HttpClient _client;
 
-        string _authority = "https://demo.identityserver.io";
-        string _api = "https://api.identityserver.io/";
-        
         public MainPage()
         {
             this.InitializeComponent();
@@ -30,16 +27,18 @@ namespace UwpSample
 
         private async void LoginButton_Click(object sender, RoutedEventArgs e)
         {
-            
-            var webView = new UwpWebView(enableWindowsAuthentication: false);
+            var authority = "https://demo.identityserver.io";
+            var browser = new UwpWebView(enableWindowsAuthentication: false);
 
-            var options = new OidcClientOptions(
-                authority:    _authority,
-                clientId:     "native.hybrid",
-                clientSecret: "",
-                scope:        "openid profile api offline_access",
-                redirectUri:  WebAuthenticationBroker.GetCurrentApplicationCallbackUri().AbsoluteUri,
-                webView:      webView);
+            var options = new OidcClientOptions
+            {
+                Authority = authority,
+                ClientId = "native.hybrid",
+                Scope = "openid profile api offline_access",
+                RedirectUri = WebAuthenticationBroker.GetCurrentApplicationCallbackUri().AbsoluteUri,
+
+                Browser = browser
+            };
 
             var client = new OidcClient(options);
             var result = await client.LoginAsync();
@@ -52,25 +51,18 @@ namespace UwpSample
 
             var sb = new StringBuilder(128);
 
-            foreach (var claim in result.Claims)
+            foreach (var claim in result.User.Claims)
             {
                 sb.AppendLine($"{claim.Type}: {claim.Value}");
             }
 
-            sb.AppendLine($"refresh token: {result?.RefreshToken ?? "none"}");
-            sb.AppendLine($"access token: {result?.AccessToken ?? "none"}");
+            sb.AppendLine($"refresh token: {result.RefreshToken}");
+            sb.AppendLine($"access token: {result.AccessToken}");
             
             ResultTextBox.Text = sb.ToString();
 
-            if (!string.IsNullOrEmpty(result.RefreshToken))
-            {
-                _client = new HttpClient(result.Handler);
-            }
-            else
-            {
-                _client = new HttpClient();
-            }
-            _client.BaseAddress = new Uri(_api);
+            _client = new HttpClient(result.RefreshTokenHandler);
+            _client.BaseAddress = new Uri("https://demo.identityserver.io/api/");
         }
 
         private async void CallApiButton_Click(object sender, RoutedEventArgs e)
@@ -80,7 +72,7 @@ namespace UwpSample
                 return;
             }
 
-            var result = await _client.GetAsync("identity");
+            var result = await _client.GetAsync("test");
             if (result.IsSuccessStatusCode)
             {
                 ResultTextBox.Text = JArray.Parse(await result.Content.ReadAsStringAsync()).ToString();
