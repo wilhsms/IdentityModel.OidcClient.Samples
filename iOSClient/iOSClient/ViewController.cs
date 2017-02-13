@@ -32,18 +32,18 @@ namespace iOSClient
 
 		async void LoginButton_TouchUpInside (object sender, EventArgs e)
 		{
-			var authority = "https://demo.identityserver.io";
+			var options = new OidcClientOptions
+			{
+				Authority = "https://demo.identityserver.io",
+				ClientId = "native.hybrid",
+				Scope = "openid profile email api",
+				RedirectUri = "io.identitymodel.native://callback",
 
-			var options = new OidcClientOptions (
-				authority,
-				"native.hybrid",
-				"secret",
-				"openid profile email api",
-				"io.identitymodel.native://callback");
+				ResponseMode = OidcClientOptions.AuthorizeResponseMode.Redirect
+			};
 
 			_client = new OidcClient (options);
 			_state = await _client.PrepareLoginAsync ();
-
 
 			AppDelegate.CallbackHandler = HandleCallback;
 			safari = new SafariServices.SFSafariViewController (new NSUrl (_state.StartUrl));
@@ -73,14 +73,20 @@ namespace iOSClient
 		{
 			await safari.DismissViewControllerAsync (true);
 
-			var result = await _client.ValidateResponseAsync (url, _state);
+			var result = await _client.ProcessResponseAsync (url, _state);
+
+			if (result.IsError)
+			{
+				OutputTextView.Text = result.Error;
+				return;
+			}
 
 			var sb = new StringBuilder (128);
-			foreach (var claim in result.Claims) {
+			foreach (var claim in result.User.Claims) {
 				sb.AppendFormat ("{0}: {1}\n", claim.Type, claim.Value);
 			}
 
-			sb.AppendFormat ("\n{0}: {1}\n", "refresh token", result.RefreshToken);
+			sb.AppendFormat ("\n{0}: {1}\n", "refresh token", result?.RefreshToken ?? "none");
 			sb.AppendFormat ("\n{0}: {1}\n", "access token", result.AccessToken);
 
 			OutputTextView.Text = sb.ToString ();
