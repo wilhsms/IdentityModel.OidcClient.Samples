@@ -1,4 +1,5 @@
 ﻿using IdentityModel.OidcClient;
+using IdentityModel.OidcClient.Browser;
 using IdentityModel.OidcClient.WebView.WinForms;
 using Newtonsoft.Json.Linq;
 using System;
@@ -35,8 +36,8 @@ namespace WinForms
         {
             AccessTokenDisplay.Clear();
             OtherDataDisplay.Clear();
-            
-            var result = await _oidcClient.LoginAsync(Silent.Checked);
+
+            var result = await _oidcClient.LoginAsync(DisplayMode.Visible);
 
             if (result.IsError)
             {
