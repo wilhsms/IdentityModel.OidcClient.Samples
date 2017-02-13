@@ -1,5 +1,4 @@
 ﻿using IdentityModel.OidcClient;
-using Serilog;
 using System;
 using System.Diagnostics;
 using System.Net;
@@ -12,12 +11,6 @@ namespace ConsoleSystemBrowser
     {
         static void Main(string[] args)
         {
-            // setup logging
-            Log.Logger = new LoggerConfiguration()
-                .MinimumLevel.Debug()
-                .WriteTo.LiterateConsole()
-                .CreateLogger();
-
             Console.WriteLine("+-----------------------+");
             Console.WriteLine("|  Sign in with OIDC    |");
             Console.WriteLine("+-----------------------+");
@@ -43,16 +36,22 @@ namespace ConsoleSystemBrowser
             Console.WriteLine("Listening..");
             http.Start();
 
-            var options = new OidcClientOptions(
-                "https://demo.identityserver.io",
-                "native",
-                "secret",
-                "openid profile api",
-                redirectUri)
+            var options = new OidcClientOptions
             {
-                UseFormPost = true,
-                Style = OidcClientOptions.AuthenticationStyle.Hybrid
+                Authority = "https://demo.identityserver.io",
+                ClientId = "native.hybrid",
+                Scope = "openid profile api",
+                RedirectUri = redirectUri
             };
+                
+            //    "native",
+            //    "secret",
+            //    "openid profile api",
+            //    redirectUri)
+            //{
+            //    UseFormPost = true,
+            //    Style = OidcClientOptions.AuthenticationStyle.Hybrid
+            //};
 
             var client = new OidcClient(options);
             var state = await client.PrepareLoginAsync();
@@ -80,12 +79,16 @@ namespace ConsoleSystemBrowser
             responseOutput.Close();
 
             Console.WriteLine($"Form Data: {formData}");
-            var result = await client.ValidateResponseAsync(formData, state);
+            var result = await client.ProcessResponseAsync(formData, state);
 
-            if (result.Success)
+            if (result.IsError)
+            {
+                Console.WriteLine("\n\nError:\n{0}", result.Error);
+            }
+            else
             {
                 Console.WriteLine("\n\nClaims:");
-                foreach (var claim in result.Claims)
+                foreach (var claim in result.User.Claims)
                 {
                     Console.WriteLine("{0}: {1}", claim.Type, claim.Value);
                 }
@@ -97,10 +100,6 @@ namespace ConsoleSystemBrowser
                 {
                     Console.WriteLine("Refresh token:\n{0}", result.RefreshToken);
                 }
-            }
-            else
-            {
-                Console.WriteLine("\n\nError:\n{0}", result.Error);
             }
 
             http.Stop();
