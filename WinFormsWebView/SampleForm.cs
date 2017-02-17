@@ -3,7 +3,6 @@ using IdentityModel.OidcClient.Browser;
 using IdentityModel.OidcClient.WebView.WinForms;
 using Newtonsoft.Json.Linq;
 using System;
-using System.Linq;
 using System.Net.Http;
 using System.Text;
 using System.Windows.Forms;
@@ -26,7 +25,7 @@ namespace WinForms
                 Scope = "openid email api offline_access",
                 RedirectUri = "http://localhost/winforms.client",
 
-                Browser = new WinFormsWebView()
+                Browser = new WinFormsEmbeddedBrowser()
             };
 
             _oidcClient = new OidcClient(options);

@@ -1,7 +1,8 @@
-﻿using IdentityModel.OidcClient.Browser;
+﻿// Copyright (c) Brock Allen & Dominick Baier. All rights reserved.
+// Licensed under the Apache License, Version 2.0. See LICENSE in the project root for license information.
+
+using IdentityModel.OidcClient.Browser;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -9,16 +10,16 @@ using System.Windows.Forms;
 
 namespace IdentityModel.OidcClient.WebView.WinForms
 {
-    public class WinFormsWebView : IBrowser
+    public class WinFormsEmbeddedBrowser : IBrowser
     {
         private readonly Func<Form> _formFactory;
 
-        public WinFormsWebView(Func<Form> formFactory)
+        public WinFormsEmbeddedBrowser(Func<Form> formFactory)
         {
             _formFactory = formFactory;
         }
 
-        public WinFormsWebView(string title = "Authenticating ...", int width = 1024, int height = 768)
+        public WinFormsEmbeddedBrowser(string title = "Authenticating ...", int width = 1024, int height = 768)
             : this(() => new Form
             {
                 Name = "WebAuthentication",
@@ -27,8 +28,6 @@ namespace IdentityModel.OidcClient.WebView.WinForms
                 Height = height
             })
         { }
-
-        //public event EventHandler<HiddenModeFailedEventArgs> HiddenModeFailed;
 
         public async Task<BrowserResult> InvokeAsync(BrowserOptions options)
         {
@@ -80,29 +79,8 @@ namespace IdentityModel.OidcClient.WebView.WinForms
                 browser.Show();
 
                 System.Threading.Timer timer = null;
-                if (options.DisplayMode != DisplayMode.Visible)
-                {
-                    //result.ResultType = InvokeResultType.Timeout;
-                    //timer = new System.Threading.Timer((o) =>
-                    //{
-                    //    var args = new HiddenModeFailedEventArgs(result);
-                    //    HiddenModeFailed?.Invoke(this, args);
-                    //    if (args.Cancel)
-                    //    {
-                    //        browser.Stop();
-                    //        form.Invoke(new Action(() => form.Close()));
-                    //    }
-                    //    else
-                    //    {
-                    //        form.Invoke(new Action(() => form.Show()));
-                    //    }
-                    //}, null, (int)options.InvisibleModeTimeout.TotalSeconds * 1000, Timeout.Infinite);
-                }
-                else
-                {
-                    form.Show();
-                }
 
+                form.Show();
                 browser.Navigate(options.StartUrl);
 
                 await signal.WaitAsync();
