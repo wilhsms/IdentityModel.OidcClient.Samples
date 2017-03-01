@@ -1,18 +1,19 @@
 ﻿// Copyright (c) Brock Allen & Dominick Baier. All rights reserved.
 // Licensed under the Apache License, Version 2.0. See LICENSE in the project root for license information.
 
+using IdentityModel.OidcClient;
 using IdentityModel.OidcClient.Browser;
 using System;
 using System.Threading.Tasks;
 using Windows.Security.Authentication.Web;
 
-namespace IdentityModel.OidcClient.WebView.Uwp
+namespace UwpSample
 {
-    public class UwpWebView : IBrowser
+    public class WabBrowser : IBrowser
     {
         private readonly bool _enableWindowsAuthentication;
 
-        public UwpWebView(bool enableWindowsAuthentication = false)
+        public WabBrowser(bool enableWindowsAuthentication = false)
         {
             _enableWindowsAuthentication = enableWindowsAuthentication;
         }

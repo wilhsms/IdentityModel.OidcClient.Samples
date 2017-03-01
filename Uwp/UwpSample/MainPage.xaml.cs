@@ -1,6 +1,4 @@
-﻿using IdentityModel.Client;
-using IdentityModel.OidcClient;
-using IdentityModel.OidcClient.WebView.Uwp;
+﻿using IdentityModel.OidcClient;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Net.Http;
@@ -27,17 +25,14 @@ namespace UwpSample
 
         private async void LoginButton_Click(object sender, RoutedEventArgs e)
         {
-            var authority = "https://demo.identityserver.io";
-            var browser = new UwpWebView(enableWindowsAuthentication: false);
-
             var options = new OidcClientOptions
             {
-                Authority = authority,
+                Authority = "https://demo.identityserver.io",
                 ClientId = "native.hybrid",
                 Scope = "openid profile api offline_access",
                 RedirectUri = WebAuthenticationBroker.GetCurrentApplicationCallbackUri().AbsoluteUri,
 
-                Browser = browser
+                Browser = new WabBrowser(enableWindowsAuthentication: false)
             };
 
             var client = new OidcClient(options);
@@ -62,7 +57,7 @@ namespace UwpSample
             ResultTextBox.Text = sb.ToString();
 
             _client = new HttpClient(result.RefreshTokenHandler);
-            _client.BaseAddress = new Uri("https://demo.identityserver.io/api/");
+            _client.BaseAddress = new Uri("https://api.identityserver.io/");
         }
 
         private async void CallApiButton_Click(object sender, RoutedEventArgs e)
@@ -72,10 +67,11 @@ namespace UwpSample
                 return;
             }
 
-            var result = await _client.GetAsync("test");
+            var result = await _client.GetAsync("identity");
             if (result.IsSuccessStatusCode)
             {
-                ResultTextBox.Text = JArray.Parse(await result.Content.ReadAsStringAsync()).ToString();
+                var response = await result.Content.ReadAsStringAsync();
+                ResultTextBox.Text = JArray.Parse(response).ToString();
             }
             else
             {
