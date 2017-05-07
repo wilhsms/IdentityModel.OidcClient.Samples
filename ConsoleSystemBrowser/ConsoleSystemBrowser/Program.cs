@@ -44,15 +44,6 @@ namespace ConsoleSystemBrowser
                 RedirectUri = redirectUri
             };
                 
-            //    "native",
-            //    "secret",
-            //    "openid profile api",
-            //    redirectUri)
-            //{
-            //    UseFormPost = true,
-            //    Style = OidcClientOptions.AuthenticationStyle.Hybrid
-            //};
-
             var client = new OidcClient(options);
             var state = await client.PrepareLoginAsync();
 
