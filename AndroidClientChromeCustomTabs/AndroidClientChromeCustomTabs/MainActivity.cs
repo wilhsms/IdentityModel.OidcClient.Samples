@@ -44,13 +44,16 @@ namespace AndroidClientChromeCustomTabs
         {
             var authority = "https://demo.identityserver.io";
 
-            var options = new OidcClientOptions(
-                authority,
-                "native.hybrid",
-                "xoxo",
-                "openid profile api",
-                "io.identitymodel.native://callback", 
-                new ChromeCustomTabsWebView(this));
+            var options = new OidcClientOptions
+            {
+                Authority = authority,
+                ClientId = "native.hybrid",
+                ClientSecret = "xoxo",
+                Scope = "openid profile api",
+                RedirectUri = "io.identitymodel.native://callback",
+                ResponseMode = OidcClientOptions.AuthorizeResponseMode.Redirect,
+                Browser = new ChromeCustomTabsWebView(this)
+            };
 
             _oidcClient = new OidcClient(options);
             var result = await _oidcClient.LoginAsync();
@@ -64,7 +67,7 @@ namespace AndroidClientChromeCustomTabs
             }
 
             var sb = new StringBuilder(128);
-            foreach (var claim in result.Claims)
+            foreach (var claim in result.User.Claims)
             {
                 sb.Append(string.Format("{0}: {1}\n", claim.Type, claim.Value));
             }

@@ -2,17 +2,15 @@ using Android.App;
 using Android.Content;
 using Android.Graphics;
 using Android.Support.CustomTabs;
-using IdentityModel.OidcClient.WebView;
+using IdentityModel.OidcClient.Browser;
 using System;
 using System.Threading.Tasks;
 
 namespace AndroidClientChromeCustomTabs
 {
 
-    class ChromeCustomTabsWebView : IWebView
+    class ChromeCustomTabsWebView : IBrowser
     {
-        public event EventHandler<HiddenModeFailedEventArgs> HiddenModeFailed;
-
         private readonly Activity _context;
         private CustomTabsActivityManager _customTabs;
 
@@ -21,7 +19,7 @@ namespace AndroidClientChromeCustomTabs
             _context = context;
         }
 
-        public Task<InvokeResult> InvokeAsync(InvokeOptions options)
+        public Task<BrowserResult> InvokeAsync(BrowserOptions options)
         {
             if (string.IsNullOrWhiteSpace(options.StartUrl))
             {
@@ -35,7 +33,7 @@ namespace AndroidClientChromeCustomTabs
 
             // must be able to wait for the intent to be finished to continue
             // with setting the task result
-            var _tcs = new TaskCompletionSource<InvokeResult>();
+            var _tcs = new TaskCompletionSource<BrowserResult>();
 
             // create & open chrome custom tab
             _customTabs = new CustomTabsActivityManager(_context);
@@ -62,10 +60,10 @@ namespace AndroidClientChromeCustomTabs
                 //_context.StartActivity(typeof(MainActivity));
 
                 // set result
-                _tcs.SetResult(new InvokeResult
+                _tcs.SetResult(new BrowserResult
                 {
                     Response = response,
-                    ResultType = InvokeResultType.Success
+                    ResultType = BrowserResultType.Success
                 });
             };
 
