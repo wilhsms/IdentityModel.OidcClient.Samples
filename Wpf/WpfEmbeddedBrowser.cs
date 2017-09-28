@@ -1,4 +1,8 @@
-﻿using IdentityModel.OidcClient.Browser;
+﻿// Copyright (c) Brock Allen & Dominick Baier. All rights reserved.
+// contributed by Ben Zuill-Smith (https://github.com/bzuillsmith)
+// Licensed under the Apache License, Version 2.0. See LICENSE in the project root for license information.
+
+using IdentityModel.OidcClient.Browser;
 using mshtml;
 using System;
 using System.Linq;
@@ -9,11 +13,11 @@ using System.Windows.Controls;
 
 namespace WpfSample.Auth
 {
-    public class OidcBrowser : IBrowser
+    public class WpfEmbeddedBrowser : IBrowser
     {
         private BrowserOptions _options = null;
 
-        public OidcBrowser()
+        public WpfEmbeddedBrowser()
         {
 
         }

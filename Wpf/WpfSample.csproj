@@ -153,7 +153,7 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Auth\OidcBrowser.cs" />
+    <Compile Include="WpfEmbeddedBrowser.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>

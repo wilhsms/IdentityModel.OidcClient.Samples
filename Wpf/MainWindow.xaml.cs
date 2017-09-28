@@ -1,7 +1,9 @@
-﻿using IdentityModel.OidcClient;
-using IdentityModel.OidcClient.Browser;
+﻿// Copyright (c) Brock Allen & Dominick Baier. All rights reserved.
+// contributed by Ben Zuill-Smith (https://github.com/bzuillsmith)
+// Licensed under the Apache License, Version 2.0. See LICENSE in the project root for license information.
+
+using IdentityModel.OidcClient;
 using System;
-using System.Threading.Tasks;
 using System.Windows;
 using WpfSample.Auth;
 
@@ -29,9 +31,10 @@ namespace WpfSample
                 Scope = "openid profile email",
                 RedirectUri = "http://127.0.0.1/sample-wpf-app",
                 ResponseMode = OidcClientOptions.AuthorizeResponseMode.FormPost,
-                Flow = OidcClientOptions.AuthenticationFlow.AuthorizationCode
+                Flow = OidcClientOptions.AuthenticationFlow.AuthorizationCode,
+                Browser = new WpfEmbeddedBrowser()
             };
-            options.Browser = new OidcBrowser();
+
             _oidcClient = new OidcClient(options);
 
             LoginResult result;
