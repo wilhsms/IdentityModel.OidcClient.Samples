@@ -57,7 +57,7 @@ namespace iOSClient
 				return;
 			}
 
-			var result = await _apiClient.GetAsync ("identity");
+			var result = await _apiClient.GetAsync ("test");
 
 			var content = await result.Content.ReadAsStringAsync ();
 
@@ -93,7 +93,7 @@ namespace iOSClient
 
 			_apiClient = new HttpClient ();
 			_apiClient.SetBearerToken (result.AccessToken);
-			_apiClient.BaseAddress = new Uri ("https://api.identityserver.io");
+			_apiClient.BaseAddress = new Uri ("https://demo.identityserver.io/api/");
 
 			CallApiButton.Enabled = true;
 		}
