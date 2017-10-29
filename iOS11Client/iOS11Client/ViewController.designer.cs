@@ -15,6 +15,10 @@ namespace iOS11Client
     {
         [Outlet]
         [GeneratedCode ("iOS Designer", "1.0")]
+        UIKit.UIButton CallApiButton { get; set; }
+
+        [Outlet]
+        [GeneratedCode ("iOS Designer", "1.0")]
         UIKit.UIButton LoginButton { get; set; }
 
         [Outlet]
@@ -23,6 +27,11 @@ namespace iOS11Client
 
         void ReleaseDesignerOutlets ()
         {
+            if (CallApiButton != null) {
+                CallApiButton.Dispose ();
+                CallApiButton = null;
+            }
+
             if (LoginButton != null) {
                 LoginButton.Dispose ();
                 LoginButton = null;
