@@ -13,34 +13,33 @@ using Android.Views;
 using Android.Widget;
 using IdentityModel.OidcClient.Browser;
 
-namespace AndroidChromeTabsVS2017
+namespace AndroidClient
 {
     public class ChromeCustomTabsBrowser : IBrowser
     {
         private readonly Activity _context;
         private readonly CustomTabsActivityManager _manager;
-        private readonly CustomTabsIntent _customTabsIntent;
 
         public ChromeCustomTabsBrowser(Activity context)
         {
             _context = context;
             _manager = new CustomTabsActivityManager(_context);
+        }
+
+        public Task<BrowserResult> InvokeAsync(BrowserOptions options)
+        {
+            var task = new TaskCompletionSource<BrowserResult>();
 
             var builder = new CustomTabsIntent.Builder(_manager.Session)
                .SetToolbarColor(Color.Argb(255, 52, 152, 219))
                .SetShowTitle(true)
                .EnableUrlBarHiding();
 
-            _customTabsIntent = builder.Build();
+            var customTabsIntent = builder.Build();
 
             // ensures the intent is not kept in the history stack, which makes
             // sure navigating away from it will close it
-            _customTabsIntent.Intent.AddFlags(ActivityFlags.NoHistory);
-        }
-
-        public Task<BrowserResult> InvokeAsync(BrowserOptions options)
-        {
-            var task = new TaskCompletionSource<BrowserResult>();
+            customTabsIntent.Intent.AddFlags(ActivityFlags.NoHistory);
 
             Action<string> callback = null;
             callback = url =>
@@ -52,9 +51,10 @@ namespace AndroidChromeTabsVS2017
                     Response = url
                 });
             };
+
             OidcCallbackActivity.Callbacks += callback;
 
-            _customTabsIntent.LaunchUrl(_context, Android.Net.Uri.Parse(options.StartUrl));
+            customTabsIntent.LaunchUrl(_context, Android.Net.Uri.Parse(options.StartUrl));
 
             return task.Task;
         }

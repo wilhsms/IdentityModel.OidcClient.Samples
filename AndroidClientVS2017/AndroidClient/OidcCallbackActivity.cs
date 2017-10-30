@@ -10,7 +10,7 @@ using Android.Runtime;
 using Android.Views;
 using Android.Widget;
 
-namespace AndroidChromeTabsVS2017
+namespace AndroidClient
 {
     [Activity(Label = "OidcCallbackActivity")]
     [IntentFilter(new[] { Intent.ActionView },

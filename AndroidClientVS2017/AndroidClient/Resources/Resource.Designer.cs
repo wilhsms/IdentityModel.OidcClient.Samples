@@ -9,9 +9,9 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-[assembly: global::Android.Runtime.ResourceDesignerAttribute("AndroidChromeTabsVS2017.Resource", IsApplication=true)]
+[assembly: global::Android.Runtime.ResourceDesignerAttribute("AndroidClient.Resource", IsApplication=true)]
 
-namespace AndroidChromeTabsVS2017
+namespace AndroidClient
 {
 	
 	
@@ -51,7 +51,7 @@ namespace AndroidChromeTabsVS2017
 			public const int LoginButton = 2130968576;
 			
 			// aapt resource value: 0x7f040002
-			public const int LoginOutput = 2130968578;
+			public const int Output = 2130968578;
 			
 			static Id()
 			{

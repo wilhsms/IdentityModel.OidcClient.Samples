@@ -2,27 +2,30 @@
 using Android.Widget;
 using Android.OS;
 using System;
-using System.Net.Http;
 using IdentityModel.OidcClient;
+using System.Net.Http;
 
-namespace AndroidChromeTabsVS2017
+namespace AndroidClient
 {
-    [Activity(Label = "Android Client", MainLauncher = true)]
+    [Activity(Label = "AndroidClient", MainLauncher = true)]
     public class MainActivity : Activity
     {
-        private TextView _loginOutput;
+        private TextView _output;
         private LoginResult _result;
 
         protected override void OnCreate(Bundle savedInstanceState)
         {
             base.OnCreate(savedInstanceState);
 
+            // Set our view from the "main" layout resource
             SetContentView(Resource.Layout.Main);
+            var loginButton = FindViewById<Button>(Resource.Id.LoginButton);
+            loginButton.Click += _loginButton_Click;
 
-            FindViewById<Button>(Resource.Id.LoginButton).Click += _loginButton_Click;
-            FindViewById<Button>(Resource.Id.ApiButton).Click += _apiButton_Click;
+            var apiButton = FindViewById<Button>(Resource.Id.ApiButton);
+            apiButton.Click += _apiButton_Click;
 
-            _loginOutput = FindViewById<TextView>(Resource.Id.LoginOutput);
+            _output = FindViewById<TextView>(Resource.Id.Output);
         }
 
         private async void _loginButton_Click(object sender, System.EventArgs e)
@@ -58,9 +61,10 @@ namespace AndroidChromeTabsVS2017
                     Log("Access Token: " + _result.AccessToken);
                 }
             }
-            catch (Exception ex)    
+            catch (Exception ex)
             {
                 Log("Exception: " + ex.Message, true);
+                Log(ex.ToString());
             }
         }
 
@@ -68,7 +72,7 @@ namespace AndroidChromeTabsVS2017
         {
             if (_result?.IsError == false)
             {
-                var apiUrl = "https://api.identityserver.io/identity";
+                var apiUrl = "https://demo.identityserver.io/api/test";
 
                 var client = new HttpClient();
                 client.SetBearerToken(_result.AccessToken);
@@ -91,6 +95,7 @@ namespace AndroidChromeTabsVS2017
                 catch (Exception ex)
                 {
                     Log("Exception: " + ex.Message, true);
+                    Log(ex.ToString());
                 }
             }
             else
@@ -103,14 +108,14 @@ namespace AndroidChromeTabsVS2017
         {
             if (clear)
             {
-                _loginOutput.Text = "";
+                _output.Text = "";
             }
             else
             {
-                _loginOutput.Text += "\r\n";
+                _output.Text += "\r\n";
             }
 
-            _loginOutput.Text += msg;
+            _output.Text += msg;
         }
     }
 }
