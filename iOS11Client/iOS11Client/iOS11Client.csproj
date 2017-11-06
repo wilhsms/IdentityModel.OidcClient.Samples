@@ -118,7 +118,7 @@
       <HintPath>..\packages\System.IdentityModel.Tokens.Jwt.5.1.4\lib\netstandard1.4\System.IdentityModel.Tokens.Jwt.dll</HintPath>
     </Reference>
     <Reference Include="IdentityModel.OidcClient">
-      <HintPath>..\packages\IdentityModel.OidcClient.2.3.0-preview3\lib\netstandard2.0\IdentityModel.OidcClient.dll</HintPath>
+      <HintPath>..\packages\IdentityModel.OidcClient.2.3.0\lib\netstandard2.0\IdentityModel.OidcClient.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
