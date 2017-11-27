@@ -11,7 +11,7 @@ namespace AndroidClient
     public class MainActivity : Activity
     {
         private TextView _output;
-        private LoginResult _result;
+        private static LoginResult _result;
 
         protected override void OnCreate(Bundle savedInstanceState)
         {
@@ -26,6 +26,8 @@ namespace AndroidClient
             apiButton.Click += _apiButton_Click;
 
             _output = FindViewById<TextView>(Resource.Id.Output);
+
+            ShowResults();
         }
 
         private async void _loginButton_Click(object sender, System.EventArgs e)
@@ -47,6 +49,20 @@ namespace AndroidClient
                 var oidcClient = new OidcClient(options);
                 _result = await oidcClient.LoginAsync();
 
+                // used to redisplay this app if it's hidden by browser
+                StartActivity(GetType());
+            }
+            catch (Exception ex)
+            {
+                Log("Exception: " + ex.Message, true);
+                Log(ex.ToString());
+            }
+        }
+
+        private void ShowResults()
+        {
+            if (_result != null)
+            {
                 if (_result.IsError)
                 {
                     Log("Error:" + _result.Error, true);
@@ -60,11 +76,6 @@ namespace AndroidClient
                     }
                     Log("Access Token: " + _result.AccessToken);
                 }
-            }
-            catch (Exception ex)
-            {
-                Log("Exception: " + ex.Message, true);
-                Log(ex.ToString());
             }
         }
 
