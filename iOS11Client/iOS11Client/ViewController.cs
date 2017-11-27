@@ -20,7 +20,7 @@ namespace iOS11Client
 				ClientId = "native.hybrid",
 				Scope = "openid profile email api",
                 RedirectUri = "SFAuthenticationSessionExample://callback",
-                Browser = new SystemBrowser(),
+                Browser = new SFAuthenticationSessionBrowser(),
 
 				ResponseMode = OidcClientOptions.AuthorizeResponseMode.Redirect
 			};

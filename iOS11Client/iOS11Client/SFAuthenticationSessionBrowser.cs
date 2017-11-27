@@ -5,7 +5,7 @@ using SafariServices;
 
 namespace iOS11Client
 {
-    public class SystemBrowser : IBrowser
+    public class SFAuthenticationSessionBrowser : IBrowser
     {
         SFAuthenticationSession _sf;
 
