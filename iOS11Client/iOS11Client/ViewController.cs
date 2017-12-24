@@ -19,10 +19,12 @@ namespace iOS11Client
 				Authority = "https://demo.identityserver.io",
 				ClientId = "native.hybrid",
 				Scope = "openid profile email api offline_access",
-                RedirectUri = "SFAuthenticationSessionExample://callback",
-                Browser = new SFAuthenticationSessionBrowser(),
+                ResponseMode = OidcClientOptions.AuthorizeResponseMode.Redirect,
 
-				ResponseMode = OidcClientOptions.AuthorizeResponseMode.Redirect
+                RedirectUri = "SFAuthenticationSessionExample://callback",
+                PostLogoutRedirectUri = "SFAuthenticationSessionExample://callback",
+
+                Browser = new SFAuthenticationSessionBrowser()
 			};
 
 			_client = new OidcClient(options);   
@@ -75,7 +77,7 @@ namespace iOS11Client
 
         private async void RefreshButton_TouchUpInside(object sender, EventArgs e)
         {
-            if (_user.RefreshToken != null)
+            if (_user?.RefreshToken != null)
             {
                 var result = await _client.RefreshTokenAsync(_user.RefreshToken);
 
