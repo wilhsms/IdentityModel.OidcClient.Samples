@@ -23,7 +23,15 @@ namespace iOS11Client
 
         [Outlet]
         [GeneratedCode ("iOS Designer", "1.0")]
+        UIKit.UIButton LogoutButton { get; set; }
+
+        [Outlet]
+        [GeneratedCode ("iOS Designer", "1.0")]
         UIKit.UITextView OutputText { get; set; }
+
+        [Outlet]
+        [GeneratedCode ("iOS Designer", "1.0")]
+        UIKit.UIButton RefreshButton { get; set; }
 
         void ReleaseDesignerOutlets ()
         {
@@ -37,9 +45,19 @@ namespace iOS11Client
                 LoginButton = null;
             }
 
+            if (LogoutButton != null) {
+                LogoutButton.Dispose ();
+                LogoutButton = null;
+            }
+
             if (OutputText != null) {
                 OutputText.Dispose ();
                 OutputText = null;
+            }
+
+            if (RefreshButton != null) {
+                RefreshButton.Dispose ();
+                RefreshButton = null;
             }
         }
     }

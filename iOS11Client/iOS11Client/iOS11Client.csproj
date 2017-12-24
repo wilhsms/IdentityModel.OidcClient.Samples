@@ -105,20 +105,20 @@
     <Reference Include="Newtonsoft.Json">
       <HintPath>..\packages\Newtonsoft.Json.10.0.3\lib\netstandard1.3\Newtonsoft.Json.dll</HintPath>
     </Reference>
-    <Reference Include="IdentityModel.OidcClient">
-      <HintPath>..\packages\IdentityModel.OidcClient.2.3.0\lib\netstandard2.0\IdentityModel.OidcClient.dll</HintPath>
-    </Reference>
     <Reference Include="Microsoft.IdentityModel.Logging">
       <HintPath>..\packages\Microsoft.IdentityModel.Logging.1.1.5\lib\netstandard1.4\Microsoft.IdentityModel.Logging.dll</HintPath>
-    </Reference>
-    <Reference Include="IdentityModel">
-      <HintPath>..\packages\IdentityModel.2.16.0\lib\netstandard2.0\IdentityModel.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.IdentityModel.Tokens">
       <HintPath>..\packages\Microsoft.IdentityModel.Tokens.5.1.5\lib\netstandard1.4\Microsoft.IdentityModel.Tokens.dll</HintPath>
     </Reference>
     <Reference Include="System.IdentityModel.Tokens.Jwt">
       <HintPath>..\packages\System.IdentityModel.Tokens.Jwt.5.1.5\lib\netstandard1.4\System.IdentityModel.Tokens.Jwt.dll</HintPath>
+    </Reference>
+    <Reference Include="IdentityModel">
+      <HintPath>..\packages\IdentityModel.2.16.1\lib\netstandard2.0\IdentityModel.dll</HintPath>
+    </Reference>
+    <Reference Include="IdentityModel.OidcClient">
+      <HintPath>..\packages\IdentityModel.OidcClient.2.4.0-preview1\lib\netstandard2.0\IdentityModel.OidcClient.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -145,6 +145,7 @@
       <DependentUpon>ViewController.cs</DependentUpon>
     </Compile>
     <Compile Include="SFAuthenticationSessionBrowser.cs" />
+    <Compile Include="User.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\iOS\Xamarin.iOS.CSharp.targets" />
   <Import Project="..\packages\NETStandard.Library.2.0.1\build\netstandard2.0\NETStandard.Library.targets" Condition="Exists('..\packages\NETStandard.Library.2.0.1\build\netstandard2.0\NETStandard.Library.targets')" />
