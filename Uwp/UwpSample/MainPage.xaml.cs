@@ -23,7 +23,7 @@ namespace UwpSample
             this.InitializeComponent();
         }
 
-        private async void LoginButton_Click(object sender, RoutedEventArgs e)
+        private async void LoginWabButton_Click(object sender, RoutedEventArgs e)
         {
             var options = new OidcClientOptions
             {
