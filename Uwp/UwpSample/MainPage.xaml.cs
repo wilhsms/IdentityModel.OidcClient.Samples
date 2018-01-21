@@ -23,7 +23,45 @@ namespace UwpSample
             this.InitializeComponent();
         }
 
-        private async void LoginButton_Click(object sender, RoutedEventArgs e)
+        private async void LoginSysBrowseButton_Click(object sender, RoutedEventArgs e)
+        {
+            var options = new OidcClientOptions
+            {
+                Authority = "https://demo.identityserver.io",
+                ClientId = "native.hybrid",
+                Scope = "openid profile api offline_access",
+                RedirectUri = "io.identityserver.demo.uwp://callback",
+                ResponseMode = OidcClientOptions.AuthorizeResponseMode.Redirect,
+                Browser = new SystemBrowser()
+            };
+
+            var client = new OidcClient(options);
+            var result = await client.LoginAsync(new LoginRequest());
+
+
+            if (!string.IsNullOrEmpty(result.Error))
+            {
+                ResultTextBox.Text = result.Error;
+                return;
+            }
+
+            var sb = new StringBuilder(128);
+
+            foreach (var claim in result.User.Claims)
+            {
+                sb.AppendLine($"{claim.Type}: {claim.Value}");
+            }
+
+            sb.AppendLine($"refresh token: {result.RefreshToken}");
+            sb.AppendLine($"access token: {result.AccessToken}");
+
+            ResultTextBox.Text = sb.ToString();
+
+            _client = new HttpClient(result.RefreshTokenHandler);
+            _client.BaseAddress = new Uri("https://demo.identityserver.io/");
+        }
+
+        private async void LoginWabButton_Click(object sender, RoutedEventArgs e)
         {
             var options = new OidcClientOptions
             {
@@ -36,7 +74,7 @@ namespace UwpSample
             };
 
             var client = new OidcClient(options);
-            var result = await client.LoginAsync();
+            var result = await client.LoginAsync(new LoginRequest());
 
             if (!string.IsNullOrEmpty(result.Error))
             {
@@ -57,7 +95,7 @@ namespace UwpSample
             ResultTextBox.Text = sb.ToString();
 
             _client = new HttpClient(result.RefreshTokenHandler);
-            _client.BaseAddress = new Uri("https://api.identityserver.io/");
+            _client.BaseAddress = new Uri("https://demo.identityserver.io/");
         }
 
         private async void CallApiButton_Click(object sender, RoutedEventArgs e)
@@ -67,7 +105,7 @@ namespace UwpSample
                 return;
             }
 
-            var result = await _client.GetAsync("identity");
+            var result = await _client.GetAsync("api/test");
             if (result.IsSuccessStatusCode)
             {
                 var response = await result.Content.ReadAsStringAsync();

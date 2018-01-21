@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using Windows.ApplicationModel;
 using Windows.ApplicationModel.Activation;
 using Windows.UI.Xaml;
@@ -66,6 +67,25 @@ namespace UwpSample
             }
             // Ensure the current window is active
             Window.Current.Activate();
+        }
+
+        /// <summary>
+        /// Invoked when the application is launched through a custom URI scheme, such as
+        /// is the case in an OAuth 2.0 authorization flow.
+        /// </summary>
+        /// <param name="args">Details about the URI that activated the app.</param>
+        protected override void OnActivated(IActivatedEventArgs args)
+        {
+            // When the app was activated by a Protocol (custom URI scheme), forwards
+            // the URI to the SystemBrowser through a static method.
+            if (args.Kind == ActivationKind.Protocol)
+            {
+                // Extracts the authorization response URI from the arguments.
+                ProtocolActivatedEventArgs protocolArgs = (ProtocolActivatedEventArgs)args;
+                Uri uri = protocolArgs.Uri;
+                Debug.WriteLine("Authorization Response: " + uri.AbsoluteUri);
+                SystemBrowser.ProcessResponse(uri);
+            }
         }
 
         /// <summary>
