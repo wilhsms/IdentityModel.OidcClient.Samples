@@ -58,7 +58,7 @@ namespace UwpSample
             ResultTextBox.Text = sb.ToString();
 
             _client = new HttpClient(result.RefreshTokenHandler);
-            _client.BaseAddress = new Uri("https://api.identityserver.io/");
+            _client.BaseAddress = new Uri("https://demo.identityserver.io/");
         }
 
         private async void LoginWabButton_Click(object sender, RoutedEventArgs e)
@@ -95,7 +95,7 @@ namespace UwpSample
             ResultTextBox.Text = sb.ToString();
 
             _client = new HttpClient(result.RefreshTokenHandler);
-            _client.BaseAddress = new Uri("https://api.identityserver.io/");
+            _client.BaseAddress = new Uri("https://demo.identityserver.io/");
         }
 
         private async void CallApiButton_Click(object sender, RoutedEventArgs e)
@@ -105,7 +105,7 @@ namespace UwpSample
                 return;
             }
 
-            var result = await _client.GetAsync("identity");
+            var result = await _client.GetAsync("api/test");
             if (result.IsSuccessStatusCode)
             {
                 var response = await result.Content.ReadAsStringAsync();
