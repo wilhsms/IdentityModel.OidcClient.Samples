@@ -16,7 +16,6 @@ namespace UwpSample
             inFlightRequest?.TrySetCanceled();
             inFlightRequest = new TaskCompletionSource<BrowserResult>();
 
-
             var res = Launcher.LaunchUriAsync(new Uri(options.StartUrl));
 
             return inFlightRequest.Task;
@@ -29,8 +28,7 @@ namespace UwpSample
                 Response = responseData.OriginalString,
                 ResultType = BrowserResultType.Success
             };
-
-
+            
             inFlightRequest.SetResult(result);
             inFlightRequest = null; 
         }

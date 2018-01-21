@@ -36,7 +36,8 @@ namespace UwpSample
             };
 
             var client = new OidcClient(options);
-            var result = await client.LoginAsync();
+            var result = await client.LoginAsync(new LoginRequest());
+
 
             if (!string.IsNullOrEmpty(result.Error))
             {
@@ -73,7 +74,7 @@ namespace UwpSample
             };
 
             var client = new OidcClient(options);
-            var result = await client.LoginAsync();
+            var result = await client.LoginAsync(new LoginRequest());
 
             if (!string.IsNullOrEmpty(result.Error))
             {
