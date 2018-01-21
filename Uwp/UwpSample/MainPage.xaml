@@ -16,7 +16,8 @@
         </Grid.RowDefinitions>
         <StackPanel Orientation="Horizontal" Grid.Row="0" Margin="0,0,0,5">
             <Button x:Name="LoginWabButton" Content="Login with WAB"  Click="LoginWabButton_Click"/>
-            <Button x:Name="CallApiButton" Content="Call API"  Margin="5,0,0,0" VerticalAlignment="Top" Click="CallApiButton_Click"/>
+            <Button x:Name="LoginSysBrowserButton" Content="Login with System Browser" Margin="5,0,0,0" Click="LoginSysBrowseButton_Click"/>
+            <Button x:Name="CallApiButton" Content="Call API"  Margin="5,0,0,0" Click="CallApiButton_Click"/>
         </StackPanel>
         <TextBox Grid.Row="1" x:Name="ResultTextBox" HorizontalAlignment="Stretch"  TextWrapping="Wrap" Text="TextBox" />
 
