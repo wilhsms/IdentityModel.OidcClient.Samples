@@ -93,6 +93,8 @@ namespace WindowsConsoleSystemBrowser
 
             var result = await client.ProcessResponseAsync(response, state);
 
+            BringConsoleToFront();
+
             if (result.IsError)
             {
                 Console.WriteLine("\n\nError:\n{0}", result.Error);
