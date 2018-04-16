@@ -36,7 +36,7 @@ namespace WinForms
             AccessTokenDisplay.Clear();
             OtherDataDisplay.Clear();
 
-            var result = await _oidcClient.LoginAsync(DisplayMode.Visible);
+            var result = await _oidcClient.LoginAsync(new LoginRequest { BrowserDisplayMode = DisplayMode.Visible });
 
             if (result.IsError)
             {
