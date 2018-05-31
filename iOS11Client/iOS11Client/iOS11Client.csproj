@@ -105,9 +105,6 @@
     <Reference Include="Newtonsoft.Json">
       <HintPath>..\packages\Newtonsoft.Json.11.0.2\lib\netstandard2.0\Newtonsoft.Json.dll</HintPath>
     </Reference>
-    <Reference Include="IdentityModel">
-      <HintPath>..\packages\IdentityModel.3.5.0\lib\netstandard2.0\IdentityModel.dll</HintPath>
-    </Reference>
     <Reference Include="Microsoft.IdentityModel.Logging">
       <HintPath>..\packages\Microsoft.IdentityModel.Logging.5.2.1\lib\netstandard1.4\Microsoft.IdentityModel.Logging.dll</HintPath>
     </Reference>
@@ -117,8 +114,14 @@
     <Reference Include="System.IdentityModel.Tokens.Jwt">
       <HintPath>..\packages\System.IdentityModel.Tokens.Jwt.5.2.1\lib\netstandard1.4\System.IdentityModel.Tokens.Jwt.dll</HintPath>
     </Reference>
+    <Reference Include="System.Text.Encodings.Web">
+      <HintPath>..\packages\System.Text.Encodings.Web.4.4.0\lib\netstandard2.0\System.Text.Encodings.Web.dll</HintPath>
+    </Reference>
+    <Reference Include="IdentityModel">
+      <HintPath>..\packages\IdentityModel.3.7.0\lib\netstandard2.0\IdentityModel.dll</HintPath>
+    </Reference>
     <Reference Include="IdentityModel.OidcClient">
-      <HintPath>..\packages\IdentityModel.OidcClient.2.6.0\lib\netstandard2.0\IdentityModel.OidcClient.dll</HintPath>
+      <HintPath>..\packages\IdentityModel.OidcClient.2.7.0\lib\netstandard2.0\IdentityModel.OidcClient.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
