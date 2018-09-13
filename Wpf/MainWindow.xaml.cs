@@ -5,6 +5,7 @@
 using IdentityModel.OidcClient;
 using System;
 using System.Windows;
+using IdentityModel.OidcClient.Browser;
 using WpfSample.Auth;
 
 namespace WpfSample
@@ -26,13 +27,15 @@ namespace WpfSample
         {
             var options = new OidcClientOptions()
             {
-                Authority = "https://demo.identityserver.io/",
-                ClientId = "native.code",
-                Scope = "openid profile email",
+                Authority = "http://localhost:5001/",
+                ClientId = "8b25bce5-fbee-41a8-ba0e-8385fe4afff7",
+                ClientSecret = "8b25bce5-fbee-41a8-ba0e-8385fe4afff7",
+                Scope = "openid profile openIdConnectClient",
                 RedirectUri = "http://127.0.0.1/sample-wpf-app",
                 ResponseMode = OidcClientOptions.AuthorizeResponseMode.FormPost,
                 Flow = OidcClientOptions.AuthenticationFlow.AuthorizationCode,
-                Browser = new WpfEmbeddedBrowser()
+                Browser = new WpfEmbeddedBrowser(),
+                //BrowserTimeout = TimeSpan.FromSeconds(30)
             };
 
             _oidcClient = new OidcClient(options);
@@ -40,7 +43,7 @@ namespace WpfSample
             LoginResult result;
             try
             {
-                result = await _oidcClient.LoginAsync();
+                result = _oidcClient.LoginAsync(new LoginRequest {BrowserDisplayMode = DisplayMode.Visible}).Result;
             }
             catch (Exception ex)
             {
