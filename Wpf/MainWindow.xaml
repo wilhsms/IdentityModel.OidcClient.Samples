@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:WpfSample"
         mc:Ignorable="d"
-        Title="OidcClient WPF Sample" Height="350" Width="525">
+        Title="OidcClient WPF Sample" Height="350" Width="525" Loaded="Window_Loaded">
     <Grid>
         <TextBlock x:Name="Message"
                    Text="Authenticating..."

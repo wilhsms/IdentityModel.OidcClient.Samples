@@ -20,22 +20,20 @@ namespace WpfSample
         public MainWindow()
         {
             InitializeComponent();
-            Loaded += Start;
         }
 
-        public async void Start(object sender, RoutedEventArgs e)
+        private async void Window_Loaded(object sender, RoutedEventArgs e)
         {
             var options = new OidcClientOptions()
             {
-                Authority = "http://localhost:5001/",
+                Authority = "http://localhost:5001",
                 ClientId = "8b25bce5-fbee-41a8-ba0e-8385fe4afff7",
                 ClientSecret = "8b25bce5-fbee-41a8-ba0e-8385fe4afff7",
                 Scope = "openid profile openIdConnectClient",
                 RedirectUri = "http://127.0.0.1/sample-wpf-app",
                 ResponseMode = OidcClientOptions.AuthorizeResponseMode.FormPost,
                 Flow = OidcClientOptions.AuthenticationFlow.AuthorizationCode,
-                Browser = new WpfEmbeddedBrowser(),
-                //BrowserTimeout = TimeSpan.FromSeconds(30)
+                Browser = new WpfEmbeddedBrowser()
             };
 
             _oidcClient = new OidcClient(options);
@@ -43,7 +41,7 @@ namespace WpfSample
             LoginResult result;
             try
             {
-                result = _oidcClient.LoginAsync(new LoginRequest {BrowserDisplayMode = DisplayMode.Visible}).Result;
+                result = await _oidcClient.LoginAsync(new LoginRequest { BrowserDisplayMode = DisplayMode.Visible });
             }
             catch (Exception ex)
             {
@@ -53,7 +51,7 @@ namespace WpfSample
 
             if (result.IsError)
             {
-                Message.Text = result.Error == "UserCancel" ? "The sign-in window was closed before authorization was completed." : result.Error;
+                Message.Text = result.Error == "UserCancel" ? "A janela de autenticação foi fechada antes da autorização ser completada." : result.Error;
             }
             else
             {

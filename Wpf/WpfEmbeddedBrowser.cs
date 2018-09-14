@@ -19,7 +19,6 @@ namespace WpfSample.Auth
 
         public WpfEmbeddedBrowser()
         {
-
         }
 
         public async Task<BrowserResult> InvokeAsync(BrowserOptions options)
@@ -28,8 +27,8 @@ namespace WpfSample.Auth
 
             var window = new Window()
             {
-                Width=900,
-                Height=625,
+                Width = 1100,
+                Height = 625,
                 Title = "IdentityServer Demo Login"
             };
 
@@ -70,9 +69,11 @@ namespace WpfSample.Auth
                 signal.Release();
             };
 
+            webBrowser.Source = new Uri(_options.StartUrl);
+
             window.Content = webBrowser;
             window.Show();
-            webBrowser.Source = new Uri(_options.StartUrl);
+            
 
             await signal.WaitAsync();
             
